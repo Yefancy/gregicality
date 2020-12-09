@@ -52,6 +52,8 @@ public class MetaTileEntityBatteryTower extends MultiblockWithDisplayBase implem
     private EnergyContainerList input;
     private EnergyContainerList output;
     private CellCasing.CellType cell;
+    private long energyInputPerTick;
+    private long energyOutputPerTick;
 
     public MetaTileEntityBatteryTower(ResourceLocation metaTileEntityId) {
         super(metaTileEntityId);
@@ -85,6 +87,8 @@ public class MetaTileEntityBatteryTower extends MultiblockWithDisplayBase implem
         output = new EnergyContainerList(getAbilities(MultiblockAbility.OUTPUT_ENERGY));
         BigInteger capacity = BigInteger.valueOf(this.cell.getStorage()).multiply(BigInteger.valueOf(size));
         maxCapacity =  capacity.min(BigInteger.valueOf(Long.MAX_VALUE)).longValue();
+        energyInputPerTick = 0;
+        energyOutputPerTick = 0;
 
     }
 
@@ -102,13 +106,13 @@ public class MetaTileEntityBatteryTower extends MultiblockWithDisplayBase implem
         if (!getWorld().isRemote) {
             long inputEnergyStore = input.getEnergyStored();
             long energyAddedFromInput = this.addEnergy(inputEnergyStore);
-            input.changeEnergy(-energyAddedFromInput);
+            energyInputPerTick = input.changeEnergy(-energyAddedFromInput);
 
             this.changeEnergy(-GAValues.V[cell.getTier()] * 10 / 100);
 
             long bankEnergyStore = this.getEnergyStored();
             long energyAddedFromBank = output.addEnergy(bankEnergyStore);
-            this.changeEnergy(-energyAddedFromBank);
+            energyOutputPerTick = this.changeEnergy(-energyAddedFromBank);
         }
     }
 
@@ -233,6 +237,14 @@ public class MetaTileEntityBatteryTower extends MultiblockWithDisplayBase implem
         }
         this.setEnergyStored(newEnergyStored);
         return newEnergyStored - oldEnergyStored;
+    }
+
+    public long getEnergyInputPerTick() {
+        return energyInputPerTick;
+    }
+
+    public long getEnergyOutputPerTick() {
+        return energyOutputPerTick;
     }
 
     @Override
