@@ -423,6 +423,12 @@ public class GAConfig {
         @Config.RequiresWorldRestart
         public boolean oreVariants = true;
 
+        @Config.Comment("Whether or not to generate all stone types for ore variants. E.g. basalt rich ores, nether pure ores, etc. This will break existing worlds!")
+        @Config.Name("Add ore variant stone types")
+        @Config.RequiresMcRestart
+        @Config.RequiresWorldRestart
+        public boolean oreVariantsStoneTypes = true;
+
     }
 
     public static Multis multis = new Multis();
@@ -1124,7 +1130,7 @@ public class GAConfig {
                 "oil, 2500000, 15000000, 6, 40, [], [0], [], [2,17,24,0,10]",
                 "iodized_oil, 2500000, 15000000, 6, 40, [], [0], [], [2,17,24,0,10]",
                 "lava, 250000, 1000000, 1, 10, [1], [], [], []",
-                "salt_water, 50000000, 100000000, 100, 30, [], [0], [], [24,0,10]"
+                "sea_water, 50000000, 100000000, 100, 30, [], [0], [], [24,0,10]"
         };
 
         @Config.Comment({"The chance that a chunk contains a fluid reservoir, default=0.5"})

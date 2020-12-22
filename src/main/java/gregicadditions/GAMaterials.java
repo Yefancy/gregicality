@@ -9,6 +9,7 @@ import gregtech.api.unification.material.MaterialIconSet;
 import gregtech.api.unification.material.type.*;
 import gregtech.api.unification.ore.OrePrefix;
 import gregtech.api.unification.stack.MaterialStack;
+import gregtech.common.pipelike.cable.WireProperties;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
@@ -119,8 +120,8 @@ public class GAMaterials implements IMaterialHandler {
     public static final FluidMaterial FermentationBase = new FluidMaterial(918, "fermentation_base", 0x3D5917, MaterialIconSet.FLUID, of(), NO_RECYCLING | GENERATE_FLUID_BLOCK | DISABLE_DECOMPOSITION);
     public static final FluidMaterial LiquidHydrogen = new FluidMaterial(917, "liquid_hydrogen", 0x3AFFC6, MaterialIconSet.FLUID, of(), NO_RECYCLING | GENERATE_FLUID_BLOCK | DISABLE_DECOMPOSITION).setFluidTemperature(14);
     public static final FluidMaterial Xenon = new FluidMaterial(916, "xenon", 0x270095, MaterialIconSet.FLUID, of(), NO_RECYCLING | GENERATE_FLUID_BLOCK | DISABLE_DECOMPOSITION, Xe);
-    public static final FluidMaterial Neon = new FluidMaterial(915, "neon", 0xFF422A, MaterialIconSet.FLUID, of(), NO_RECYCLING | GENERATE_FLUID_BLOCK | DISABLE_DECOMPOSITION, Ne);
-    public static final FluidMaterial Krypton = new FluidMaterial(914, "krypton", 0x31C42F, MaterialIconSet.FLUID, of(), NO_RECYCLING | GENERATE_FLUID_BLOCK | DISABLE_DECOMPOSITION, Kr);
+    public static final FluidMaterial Neon = new FluidMaterial(915, "neon", 0xFF422A, MaterialIconSet.FLUID, of(), NO_RECYCLING | DISABLE_DECOMPOSITION | GENERATE_PLASMA, Ne);
+    public static final FluidMaterial Krypton = new FluidMaterial(914, "krypton", 0x31C42F, MaterialIconSet.FLUID, of(), NO_RECYCLING | GENERATE_PLASMA | DISABLE_DECOMPOSITION, Kr);
     public static final IngotMaterial Zirconium = new IngotMaterial(912, "zirconium", 0xE0E1E1, MaterialIconSet.METALLIC, 6, of(), EXT2_METAL, Zr);
     public static final GemMaterial CubicZirconia = new GemMaterial(911, "cubic_zirconia", 0xFFDFE2, MaterialIconSet.DIAMOND, 6, of(new MaterialStack(Zirconium, 1), new MaterialStack(Oxygen, 2)), NO_RECYCLING | NO_SMELTING | GENERATE_LENSE);
     public static final GemMaterial Prasiolite = new GemMaterial(910, "prasiolite", 0x9EB749, MaterialIconSet.QUARTZ, 2, of(new MaterialStack(Silicon, 5), new MaterialStack(Oxygen, 10), new MaterialStack(Iron, 1)), GENERATE_ORE | GENERATE_LENSE);
@@ -701,7 +702,7 @@ public class GAMaterials implements IMaterialHandler {
     public static final SimpleFluidMaterial IodideSolution = new SimpleFluidMaterial("iodide_solution", 0x08081c);
     public static final SimpleFluidMaterial CalicheNitrateSolution = new SimpleFluidMaterial("caliche_nitrate_solution", 0xffe6660);
     public static final SimpleFluidMaterial CalicheIodineBrine = new SimpleFluidMaterial("caliche_iodine_brine", 0xffe6660);
-    public static final SimpleFluidMaterial KeroseneIodineSolution = new SimpleFluidMaterial("", 0x08081c);
+    public static final SimpleFluidMaterial KeroseneIodineSolution = new SimpleFluidMaterial("kerosene_iodine_solution", 0x08081c);
     public static final SimpleFluidMaterial IodizedBrine = new SimpleFluidMaterial("iodized_brine", 0x525242);
     public static final SimpleFluidMaterial IodineBrineMix = new SimpleFluidMaterial("iodine_brine_mix", 0x525242);
     public static final SimpleFluidMaterial IodineSlurry = new SimpleFluidMaterial("iodine_slurry", 0x08081c);
@@ -756,6 +757,176 @@ public class GAMaterials implements IMaterialHandler {
     public static final SimpleFluidMaterial SodiumHydroxideSolution = new SimpleFluidMaterial("sodium_hydroxide_solution", 0xfcfcfa);
     public static final SimpleFluidMaterial IronSulfate = new SimpleFluidMaterial("iron_sulfate", 0xfcfcfa);
 
+    public static final SimpleFluidMaterial LithiumHydroxideSolution = new SimpleFluidMaterial("lithium_hydroxide_solution", 0xfcfcfa);
+    public static final SimpleFluidMaterial LithiumPeroxideSolution = new SimpleFluidMaterial("lithium_peroxide", 0xfcfcfa);
+    public static final SimpleFluidMaterial LithiumCarbonatePureSolution = new SimpleFluidMaterial("lithium_carbonate_pure_solution", 0xfcfcfa);
+    public static final SimpleFluidMaterial Ozone = new SimpleFluidMaterial("ozone", 0x0099FF);
+    public static final SimpleFluidMaterial NitrogenPentoxide = new SimpleFluidMaterial("nitrogen_pentoxide", 0x0033C0);
+
+
+    public static final SimpleDustMaterial AcrylicFibers = new SimpleDustMaterial("acrylic_fibers", 0xfcfcfa, (short) 135, MaterialIconSet.FINE);
+    public static final SimpleDustMaterial UranylNitrate = new SimpleDustMaterial("uranyl_nitrate", 0x33bd45, (short) 136, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial CalciumSalts = new SimpleDustMaterial("calcium_salts", 0xcacac8, (short) 137, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial SodiumSalts = new SimpleDustMaterial("sodium_salts", 0xcacac8, (short) 138, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial PotassiumMagnesiumSalts = new SimpleDustMaterial("kmg_salts", 0xcacac8, (short) 139, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial CalciumMagnesiumSalts = new SimpleDustMaterial("camg_salts", 0xcacac8, (short) 140, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial SodiumAluminiumHydride = new SimpleDustMaterial("sodium_aluminium_hydride", 0x98cafc, (short) 141, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial LithiumAluminiumHydride = new SimpleDustMaterial("lithium_aluminium_hydride", 0xc0defc, (short) 142, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial SodiumAzanide = new SimpleDustMaterial("sodium_azanide", 0xfcfcfa, (short) 143, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial SodiumAzide = new SimpleDustMaterial("sodium_azide", 0xfcfcfa, (short) 144, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial Glucosamine = new SimpleDustMaterial("glucosamine", 0xfcfcfa, (short) 145, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial AluminiumHydride = new SimpleDustMaterial("aluminium_hydride", 0x0b585c, (short) 146, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial SodiumHydride = new SimpleDustMaterial("sodium_hydride", 0xcacac8, (short) 147, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial DehydrogenationCatalyst = new SimpleDustMaterial("dehydrogenation_catalyst", 0x6464f5, (short) 148, MaterialIconSet.SHINY);
+    public static final SimpleDustMaterial PolystyreneNanoParticles = new SimpleDustMaterial("polystryrene_nanoparticles", 0x888079, (short) 149, MaterialIconSet.FINE);
+    public static final SimpleDustMaterial MagnesiumSulfate = new SimpleDustMaterial("magnesium_sulfate", 0xcacac8, (short) 150, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial SodiumMolybdate = new SimpleDustMaterial("sodium_molybdate", 0xfcfc00, (short) 151, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial SodiumPhosphomolybdate = new SimpleDustMaterial("sodium_phosphomolybdate", 0xfcfc00, (short) 152, MaterialIconSet.SHINY);
+    public static final SimpleDustMaterial SodiumPhosphotungstate = new SimpleDustMaterial("sodium_phosphotungstate", 0x7a7777, (short) 153, MaterialIconSet.SHINY);
+    public static final SimpleDustMaterial PrecipitatedAmmoniumSulfate = new SimpleDustMaterial("solid_ammonium_sulfate", 0x6464f5, (short) 154, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial Fructose = new SimpleDustMaterial("fructose", 0xfcfcfa, (short) 165, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial Glucose = new SimpleDustMaterial("glucose", 0xfcfcfa, (short) 166, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial MagnesiumHydroxide = new SimpleDustMaterial("magnesium_hydroxide", 0xcacac8, (short) 167, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial StrontiumSulfate = new SimpleDustMaterial("strontium_sulfate", 0xcacac8, (short) 168, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial StrontiumOxide = new SimpleDustMaterial("strontium_oxide", 0xcacac8, (short) 169, MaterialIconSet.DULL);
+
+    public static final SimpleFluidMaterial NitrousOxide = new SimpleFluidMaterial("nitrous_oxide", 0x2e628b);
+    public static final SimpleFluidMaterial AcryloNitrile = new SimpleFluidMaterial("acrylonitrile", 0x9999ff);
+    public static final SimpleFluidMaterial SodiumThiocyanate = new SimpleFluidMaterial("sodium_thiocyanate", 0xfcfcfa);
+    public static final SimpleFluidMaterial PolyacrylonitrileSolution = new SimpleFluidMaterial("polyacrylonitrile_solution", 0x9999ff);
+    public static final SimpleFluidMaterial MethylFormate = new SimpleFluidMaterial("methyl_formate", 0Xff9999);
+    public static final SimpleFluidMaterial WetFormamide = new SimpleFluidMaterial("wet_formamide", 0x33CCFF);
+    public static final SimpleFluidMaterial Formamide = new SimpleFluidMaterial("formamide", 0x33CCFF);
+    public static final SimpleFluidMaterial HydroxilamineDisulfate = new SimpleFluidMaterial("hydroxilamine_disulfate", 0x99add6);
+    public static final SimpleFluidMaterial Hydroxilamine = new SimpleFluidMaterial("hydroxilamine", 0x99cc99);
+    public static final SimpleFluidMaterial DilutedAmmonia = new SimpleFluidMaterial("diluted_ammonia", 0x1c38d1);
+    public static final SimpleFluidMaterial Amidoxime = new SimpleFluidMaterial("amidoxime", 0x66ff33);
+    public static final SimpleFluidMaterial PureUranylNitrateSolution = new SimpleFluidMaterial("pure_uranyl_nitrate", 0x33bd45);
+    public static final SimpleFluidMaterial AcetateSolution = new SimpleFluidMaterial("acetate_solution", 0xffc78f);
+    public static final SimpleFluidMaterial CarbonSulfide = new SimpleFluidMaterial("carbon_sulfide", 0x40ffbf);
+    public static final SimpleFluidMaterial AmineMixture = new SimpleFluidMaterial("amine_mixture", 0x755f30);
+    public static final SimpleFluidMaterial DimethylthiocarbamoilChloride = new SimpleFluidMaterial("dimethylthiocarbamoil_chloride", 0xd9ff26);
+    public static final SimpleFluidMaterial Trimethylamine = new SimpleFluidMaterial("trimetylamine", 0x755f30);
+    public static final SimpleFluidMaterial Mercaphenol = new SimpleFluidMaterial("mercaphenol", 0xbaaf18);
+    public static final SimpleFluidMaterial Dimethylformamide = new SimpleFluidMaterial("dimethylformamide", 0x42bdff);
+    public static final SimpleFluidMaterial HydrogenCrackedDMF = new SimpleFluidMaterial("hydrogen_cracked_dmf", 0x42bdff);
+    public static final SimpleFluidMaterial Oct1ene = new SimpleFluidMaterial("1_octene", 0xdadada);
+    public static final SimpleFluidMaterial CetaneTrimethylAmmoniumBromide = new SimpleFluidMaterial("cetane_trimethyl_ammonium_bromide", 0xb9c1c9);
+    public static final SimpleFluidMaterial AmmoniumPersulfate = new SimpleFluidMaterial("ammonium_persulfate", 0x6464f5);
+    public static final SimpleFluidMaterial DebrominatedWater = new SimpleFluidMaterial("debrominated_brine", 0x0000ff);
+    public static final SimpleFluidMaterial SeaWater = new SimpleFluidMaterial("sea_water", 0x0000FF);
+    public static final SimpleFluidMaterial ConcentratedBrine = new SimpleFluidMaterial("concentrated_brine", 0xfcfc95);
+    public static final SimpleFluidMaterial CalciumFreeBrine = new SimpleFluidMaterial("calcium_free_brine", 0xfcfca6);
+    public static final SimpleFluidMaterial SodiumFreeBrine = new SimpleFluidMaterial("sodium_free_brine", 0xfcfcb1);
+    public static final SimpleFluidMaterial PotassiumFreeBrine = new SimpleFluidMaterial("potassium_free_brine", 0xfcfcbc);
+    public static final SimpleFluidMaterial BoronFreeSolution = new SimpleFluidMaterial("boron_free_solution", 0xfcfccd);
+    public static final SimpleFluidMaterial SodiumLithiumSolution = new SimpleFluidMaterial("sodium_lithium_solution", 0xfcfccd);
+    public static final SimpleFluidMaterial ChilledBrine = new SimpleFluidMaterial("chilled_brine", 0xfcfc95);
+    public static final SimpleFluidMaterial MagnesiumContainingBrine = new SimpleFluidMaterial("magnesium_containing_brine", 0xfcfcbc);
+    public static final SimpleFluidMaterial BrominatedBrine = new SimpleFluidMaterial("brominated_brine", 0xfdd48d);
+    public static final SimpleFluidMaterial AcidicBrominatedBrine = new SimpleFluidMaterial("acidic_brominated_brine", 0xfdd48d);
+    public static final SimpleFluidMaterial SodiumChlorideSolution = new SimpleFluidMaterial("sodium_chloride_solution", 0xfcfcfa);
+
+
+    public static final SimpleDustMaterial Biphenyl = new SimpleDustMaterial("biphenyl", 0x003366, (short) 155, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial Diiodobiphenyl = new SimpleDustMaterial("diiodobiphenyl", 0x000f66, (short) 156, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial Bipyridine = new SimpleDustMaterial("bipyridine", 0X978662, (short) 170, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial PalladiumChloride = new SimpleDustMaterial("palladium_chloride", 0xb9c0c7, (short) 157, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial PalladiumBisDibenzylidieneacetone = new SimpleDustMaterial("palladium_bisdibenzylidieneacetone", 0Xbe81a0, (short) 158, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial PotassiumTetrachloroplatinate = new SimpleDustMaterial("potassium_tetrachloroplatinate", 0xffba54, (short) 159, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial NickelTriphenylPhosphite = new SimpleDustMaterial("nickel_triphenyl_phosphite", 0xd9d973, (short) 160, MaterialIconSet.SHINY);
+    public static final SimpleDustMaterial Dichlorocycloctadieneplatinium = new SimpleDustMaterial("dichlorocycloctadieneplatinium", 0xe0f78a, (short) 161, MaterialIconSet.SHINY);
+    public static final SimpleDustMaterial GrapheneNanotubeMix = new SimpleDustMaterial("graphene_nanotube_mix", 0x2c2c2c, (short) 162, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial GrapheneAlignedCNT = new SimpleDustMaterial("graphene_aligned_cnt", 0x2c2c2c, (short) 163, MaterialIconSet.SHINY);
+    public static final SimpleDustMaterial NiAlCatalyst = new SimpleDustMaterial("nial_catalyst", 0x6ea2ff, (short) 164, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial TitaniumNitrate = new SimpleDustMaterial("titanium_nitrate", 0xFF0066, (short) 171, MaterialIconSet.DULL);
+
+
+    public static final SimpleFluidMaterial ButhylLithium = new SimpleFluidMaterial("butyl_lithium", 0xfcfcfa);
+    public static final SimpleFluidMaterial Acetaldehyde = new SimpleFluidMaterial("acetaldehyde", 0xFF9933);
+    public static final SimpleFluidMaterial Benzaldehyde = new SimpleFluidMaterial("benzaldehyde", 0xb26f22);
+    public static final SimpleFluidMaterial Dibenzyldieneacetone = new SimpleFluidMaterial("dibenzylidieneacetone", 0Xcc6699);
+    public static final SimpleFluidMaterial TetramethyltinChloride = new SimpleFluidMaterial("tetramethyltin_chloride", 0x8c8075);
+    public static final SimpleFluidMaterial ChloroPlatinicAcid = new SimpleFluidMaterial("chloroplatinic_acid", 0xffba54);
+    public static final SimpleFluidMaterial Cyclooctadiene = new SimpleFluidMaterial("cyclooctadiene", 0x33CC33);
+    public static final SimpleFluidMaterial Cycloparaphenylene = new SimpleFluidMaterial("cycloparaphenylene", 0x333333);
+    public static final SimpleFluidMaterial SuperheavyMix = new SimpleFluidMaterial("superheavy_mix", 0x403737);
+    public static final SimpleFluidMaterial NeutronPlasma = new SimpleFluidMaterial("neutron_plasma", 0xf0e9e9);
+
+    public static final SimpleDustMaterial TitaniumTetrafluoride = new SimpleDustMaterial("titanium_tetrafluoride", Titanium.materialRGB, (short) 172, MaterialIconSet.SHINY);
+    public static final SimpleFluidMaterial HotMetastableOganesson = new SimpleFluidMaterial("hot_oganesson", 0x521973);
+    public static final SimpleFluidMaterial MoltenTitaniumTetrafluoride = new SimpleFluidMaterial("titanium_tetrafluoride_liquid", Titanium.materialRGB);
+    public static final SimpleFluidMaterial MoltenTitanium50Tetrafluoride = new SimpleFluidMaterial("titanium50_tetrafluoride_liquid", Titanium.materialRGB);
+    public static final SimpleFluidMaterial Carbon12 = new SimpleFluidMaterial("carbon_12", Carbon.materialRGB);
+    public static final SimpleFluidMaterial Carbon13 = new SimpleFluidMaterial("carbon_13", Carbon.materialRGB);
+    public static final SimpleFluidMaterial Nitrogen14 = new SimpleFluidMaterial("nitrogen_14", Nitrogen.materialRGB);
+    public static final SimpleFluidMaterial NItrogen15 = new SimpleFluidMaterial("nitrogen_15", Nitrogen.materialRGB);
+    public static final SimpleFluidMaterial CNOcatalyst = new SimpleFluidMaterial("cno_catalyst", (Nitrogen.materialRGB + Carbon.materialRGB) / 2);
+    public static final SimpleFluidMaterial Calcium44 = new SimpleFluidMaterial("calcium_44", Calcium.materialRGB);
+    public static final SimpleFluidMaterial OgannesonBreedingBase = new SimpleFluidMaterial("og_breeding_base", ((Titanium.materialRGB + 0xA85A12) / 2));
+    public static final SimpleFluidMaterial QuassifissioningPlasma = new SimpleFluidMaterial("quasifissioning_plasma", 0xD5CB54);
+    public static final SimpleFluidMaterial Ytterbium178 = new SimpleFluidMaterial("ytterbium_178", Ytterbium.materialRGB);
+    public static final SimpleFluidMaterial FlYbPlasma = new SimpleFluidMaterial("flyb_plasma", (Ytterbium.materialRGB + 0x521973) / 2);
+    public static final SimpleFluidMaterial Chromium48 = new SimpleFluidMaterial("chromium48", Chrome.materialRGB);
+    public static final SimpleFluidMaterial Iron52 = new SimpleFluidMaterial("iron52", Iron.materialRGB);
+    public static final SimpleFluidMaterial Nickel56 = new SimpleFluidMaterial("nickel56", Nickel.materialRGB);
+    public static final SimpleFluidMaterial Titanium44 = new SimpleFluidMaterial("titanium44", Titanium.materialRGB);
+    public static final SimpleFluidMaterial HeliumCNO = new SimpleFluidMaterial("helium_rich_cno", 0x59ffa6);
+    public static final SimpleFluidMaterial PlasmaChromium48 = new SimpleFluidMaterial("chromium48_plasma", Chrome.materialRGB);
+    public static final SimpleFluidMaterial PlasmaIron52 = new SimpleFluidMaterial("iron52_plasma", Iron.materialRGB);
+    public static final SimpleFluidMaterial PlasmaNickel56 = new SimpleFluidMaterial("nickel56_plasma", Nickel.materialRGB);
+    public static final SimpleFluidMaterial PlasmaTitanium44 = new SimpleFluidMaterial("titanium44_plasma", Titanium.materialRGB);
+    public static final SimpleFluidMaterial PlasmaHeliumCNO = new SimpleFluidMaterial("helium_rich_cno_plasma", 0x59ffa6);
+
+    public static final SimpleDustMaterial AnodicSlime = new SimpleDustMaterial("anodic_slime", CopperLeach.materialRGB, (short) 173, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial TelluriumOxide = new SimpleDustMaterial("tellurium_oxide", 0xFFFF66, (short) 174, MaterialIconSet.SHINY);
+    public static final SimpleDustMaterial SeleniumOxide = new SimpleDustMaterial("selenium_oxide", 0xFFFF66, (short) 175, MaterialIconSet.SHINY);
+    public static final SimpleFluidMaterial SelenateTellurateMix = new SimpleFluidMaterial("selenate_tellurate_mixture", 0x765A30);
+    public static final SimpleFluidMaterial SelenateSolution = new SimpleFluidMaterial("selenate_solution", 0xc1c46a);
+    public static final SimpleFluidMaterial CopperRefiningSolution = new SimpleFluidMaterial("copper_refining_solution", 0x765A30);
+
+    public static final SimpleFluidMaterial SodiumHydroxideBauxite = new SimpleFluidMaterial("sodium_hydroxide_bauxite", 0xbf731a);
+    public static final SimpleFluidMaterial ImpureAluminiumHydroxideSolution = new SimpleFluidMaterial("impure_aloh3_soution", 0xd8653e);
+    public static final SimpleFluidMaterial PureAluminiumHydroxideSolution = new SimpleFluidMaterial("pure_aloh3_soution", 0xfcfcfa);
+    public static final SimpleFluidMaterial RedMud = new SimpleFluidMaterial("red_mud", 0xcc3300);
+    public static final SimpleFluidMaterial NeutralisedRedMud = new SimpleFluidMaterial("neutralised_red_mud", 0xcc3300);
+    public static final SimpleFluidMaterial FerricREEChloride = new SimpleFluidMaterial("ferric_ree_chloride", 0x30301a);
+    public static final SimpleFluidMaterial RedSlurry = new SimpleFluidMaterial("red_mud", 0xcc3300);
+    public static final SimpleFluidMaterial TitaniumSulfate = new SimpleFluidMaterial("titanium_sulfate", 0xdc3d7c);
+    public static final SimpleFluidMaterial RubySlurry = new SimpleFluidMaterial("ruby_slurry", Ruby.materialRGB);
+    public static final SimpleFluidMaterial SapphireSlurry = new SimpleFluidMaterial("sapphire_slurry", Sapphire.materialRGB);
+    public static final SimpleFluidMaterial GreenSapphireSlurry = new SimpleFluidMaterial("sapphire_slurry", GreenSapphire.materialRGB);
+    public static final SimpleFluidMaterial DiluteNitricAcid = new SimpleFluidMaterial("dilute_nitric_acid", (NitricAcid.materialRGB + Water.materialRGB) / 2);
+
+    public static final SimpleDustMaterial ManganeseSulfate = new SimpleDustMaterial("manganese_sulfate", 0xfcfcfa, (short) 176, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial TinSlag = new SimpleDustMaterial("tin_slag", 0xc8b9a9, (short) 177, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial NbTaContainingDust = new SimpleDustMaterial("nbta_containing_dust", 0xc8b9a9, (short) 178, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial NiobiumTantalumOxide = new SimpleDustMaterial("niobium_tantalum_oxide", 0xfcfcfa, (short) 179, MaterialIconSet.SHINY);
+    public static final SimpleDustMaterial FusedColumbite = new SimpleDustMaterial("fused_columbite", 0xCCCC00, (short) 180, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial LeachedColumbite = new SimpleDustMaterial("leached_columbite", 0xCCCC00, (short) 181, MaterialIconSet.SHINY);
+    public static final SimpleDustMaterial FusedTantalite = new SimpleDustMaterial("fused_tantalite", 0x915028, (short) 182, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial LeachedTantalite = new SimpleDustMaterial("leached_tantalite", 0x915028, (short) 183, MaterialIconSet.SHINY);
+    public static final SimpleDustMaterial ColumbiteMinorOxideResidue = new SimpleDustMaterial("columbite_minor_oxide_residue", 0x915028, (short) 184, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial TantaliteMinorOxideResidue = new SimpleDustMaterial("tantalite_minor_oxide_residue", 0xCCCC00, (short) 185, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial LeachedPyrochlore = new SimpleDustMaterial("leached_pyrochlore", 0x996633, (short) 186, MaterialIconSet.SHINY);
+    public static final SimpleDustMaterial AcidicLeachedPyrochlore = new SimpleDustMaterial("leached_pyrochlore", 0x996633, (short) 187, MaterialIconSet.SHINY);
+    public static final SimpleDustMaterial PotasssiumFluoroNiobate = new SimpleDustMaterial("potassium_fluoroniobate", 0x73ff00, (short) 188, MaterialIconSet.SHINY);
+    public static final SimpleDustMaterial PotasssiumFluoroTantalate = new SimpleDustMaterial("potassium_fluorotantalate", 0x73ff00, (short) 189, MaterialIconSet.SHINY);
+    public static final SimpleDustMaterial BariumPeroxide = new SimpleDustMaterial("barium_peroxide", 0xfcfcfa, (short) 190, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial CassiteriteCokePellets = new SimpleDustMaterial("cassiterite_coke_pellets", 0x8f8f8f, (short) 191, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial IronSulfateDust = new SimpleDustMaterial("iron_sulfate_dust", IronSulfate.rgb, (short) 192, MaterialIconSet.DULL);
+    public static final SimpleDustMaterial StrontiumCarbonate = new SimpleDustMaterial("strontium_carbonate", StrontiumSulfate.rgb, (short) 193, MaterialIconSet.DULL);
+
+    public static final SimpleFluidMaterial NbTaSeparationMixture = new SimpleFluidMaterial("nbta_separation_mixture", 0xbcac93);
+    public static final SimpleFluidMaterial FluoroniobicAcid = new SimpleFluidMaterial("fluroniobic_acid", 0x73ff00);
+    public static final SimpleFluidMaterial FluorotantalicAcid = new SimpleFluidMaterial("flurotantalic_acid", 0x73ff00);
+    public static final SimpleFluidMaterial NbTaFluorideMix = new SimpleFluidMaterial("nbta_fluoride_mix", 0xbcac93);
+    public static final SimpleFluidMaterial OxypentafluoroNiobate = new SimpleFluidMaterial("oxypentafluoroniobate", 0x73ff00);
+    public static final SimpleFluidMaterial HeptafluoroTantalate = new SimpleFluidMaterial("heptafluorotantalate", 0x73ff00);
+    public static final SimpleFluidMaterial REEThUSulfateSolution = new SimpleFluidMaterial("reethu_sulfate_solution", 0x89be5c);
+    public static final SimpleFluidMaterial RareEarthNitrateSolution = new SimpleFluidMaterial("rare_earth_nitrate_solution", 0xcfb37d);
+    public static final SimpleFluidMaterial AlkalineEarthSulfateSolution = new SimpleFluidMaterial("alkalineearth_sulphate", 0xe6ebff);
+
     public static final IngotMaterial Quantum = new IngotMaterial(857, "quantum", 0x0f0f0f, MaterialIconSet.SHINY, 7, of(new MaterialStack(Stellite, 15), new MaterialStack(Jasper, 5), new MaterialStack(Gallium, 5), new MaterialStack(Americium241.getMaterial(), 5), new MaterialStack(Palladium, 5), new MaterialStack(Bismuth, 5), new MaterialStack(Germanium, 5), new SimpleDustMaterialStack(SiliconCarbide, 5)), CORE_METAL | DISABLE_DECOMPOSITION | DISABLE_REPLICATION, null, 25000);
     public static final IngotMaterial BlackTitanium = new IngotMaterial(856, "black_titanium", 0x6C003B, MaterialIconSet.SHINY, 7, of(new MaterialStack(Titanium, 26), new MaterialStack(Lanthanum, 6), new MaterialStack(Tungsten, 4), new MaterialStack(Cobalt, 3), new MaterialStack(Manganese, 2), new MaterialStack(Phosphorus, 2), new MaterialStack(Palladium, 2), new MaterialStack(Niobium, 1), new MaterialStack(Argon, 5)), CORE_METAL | DISABLE_DECOMPOSITION, null, Titanium.blastFurnaceTemperature * 16);
     public static final IngotMaterial TungstenTitaniumCarbide = new IngotMaterial(855, "tungsten_titanium_carbide", 0x800d0d, MaterialIconSet.SHINY, 7, of(new MaterialStack(TungstenCarbide, 7), new MaterialStack(Titanium, 3)), CORE_METAL | DISABLE_DECOMPOSITION, null, 4422);
@@ -766,15 +937,25 @@ public class GAMaterials implements IMaterialHandler {
     public static final IngotMaterial Zeron100 = new IngotMaterial(850, "zeron", 0xB4B414, MaterialIconSet.SHINY, 5, of(new MaterialStack(Chrome, 13), new MaterialStack(Nickel, 3), new MaterialStack(Molybdenum, 2), new MaterialStack(Copper, 10), new MaterialStack(Tungsten, 2), new MaterialStack(Steel, 20)), CORE_METAL | DISABLE_DECOMPOSITION, null, 6100);
     public static final IngotMaterial Cinobite = new IngotMaterial(721, "cinobite", 0x010101, MaterialIconSet.SHINY, 5, of(new MaterialStack(Zeron100, 8), new MaterialStack(Naquadria, 4), new MaterialStack(Gadolinium, 3), new MaterialStack(Aluminium, 2), new MaterialStack(Mercury, 1), new MaterialStack(Tin, 1), new MaterialStack(Titanium, 6), new MaterialStack(Osmiridium, 1)), CORE_METAL | DISABLE_DECOMPOSITION, null, 12565);
     public static final IngotMaterial HDCS = new IngotMaterial(720, "hdcs", 0x334433, MaterialIconSet.SHINY, 5, of(new MaterialStack(TungstenSteel, 12), new MaterialStack(HSSS, 9), new MaterialStack(HSSG, 6), new MaterialStack(Ruridit, 3), new MaterialStack(MagnetoResonatic, 2), new MaterialStack(Plutonium, 1)), CORE_METAL | DISABLE_DECOMPOSITION, null, 9000);
-    public static final IngotMaterial Trinium = new IngotMaterial(719, "trinium", 0x9aa19c, MaterialIconSet.SHINY, 7, of(), CORE_METAL | GENERATE_ORE, Element.valueOf("Ke"), 35000);
-    public static final IngotMaterial Adamantium = new IngotMaterial(718, "adamantium", 0x2d365c, MaterialIconSet.SHINY, 7, of(), CORE_METAL, Element.valueOf("Ad"), 17500);
+    public static final IngotMaterial Trinium = new IngotMaterial(719, "trinium", 0x9aa19c, MaterialIconSet.SHINY, 7, of(), CORE_METAL | GENERATE_ORE, Element.valueOf("Ke"), 12500);
+    public static final IngotMaterial Adamantium = new IngotMaterial(718, "adamantium", 0x2d365c, MaterialIconSet.SHINY, 7, of(), CORE_METAL, Element.valueOf("Ad"), 27500);
     public static final IngotMaterial Vibranium = new IngotMaterial(717, "vibranium", 0x828aad, MaterialIconSet.SHINY, 7, of(), CORE_METAL, Element.valueOf("Vb"), 55000);
     public static final IngotMaterial ProtoAdamantium = new IngotMaterial(716, "proto_adamantium", 0x4662d4, MaterialIconSet.SHINY, 7, of(new MaterialStack(Adamantium, 3), new MaterialStack(Promethium, 2)), CORE_METAL, null, 35000);
-    public static final IngotMaterial TriniumTitanium = new IngotMaterial(715, "trinium_titanium", 0x9986a3, MaterialIconSet.SHINY, 7, of(new MaterialStack(Trinium, 2), new MaterialStack(Titanium, 1)), CORE_METAL, null, 12500);
-    public static final IngotMaterial Taranium = new IngotMaterial(714, "taranium", 0xeb9e3f, MaterialIconSet.SHINY, 7, of(), CORE_METAL, Element.valueOf("Tn"), 15000);
-    public static final GemMaterial Zircon = new GemMaterial(713, "zircon", 0xeb9e3f, MaterialIconSet.SHINY, 7, of(), GENERATE_ORE);
-    public static final DustMaterial Caliche = new DustMaterial(712, "calich", 0xeb9e3f, MaterialIconSet.SHINY, 7, of(), GENERATE_ORE);
+    public static final IngotMaterial TriniumTitanium = new IngotMaterial(715, "trinium_titanium", 0x9986a3, MaterialIconSet.SHINY, 7, of(new MaterialStack(Trinium, 2), new MaterialStack(Titanium, 1)), CORE_METAL, null, 24000);
+    public static final IngotMaterial Taranium = new IngotMaterial(714, "taranium", 0x0c0c0d, MaterialIconSet.SHINY, 7, of(), CORE_METAL, Element.valueOf("Tn"), 15000);
+    public static final GemMaterial Zircon = new GemMaterial(713, "zircon", 0xeb9e3f, MaterialIconSet.GEM_VERTICAL, 7, of(), GENERATE_ORE);
+    public static final DustMaterial Caliche = new DustMaterial(712, "caliche", 0xeb9e3f, MaterialIconSet.DULL, 7, of(), GENERATE_ORE);
     public static final FluidMaterial IodizedOil = new FluidMaterial(711, "iodized_oil", 0x666666, MaterialIconSet.FLUID, of(), 0);
+    public static final IngotMaterial LithiumTitanate = new IngotMaterial(710, "lithium_titanate", 0xfe71a9, MaterialIconSet.SHINY, 5, of(new MaterialStack(Lithium, 2), new MaterialStack(Titanium, 2), new MaterialStack(Oxygen, 3)), GENERATE_PLATE | DISABLE_DECOMPOSITION, null);
+    public static final IngotMaterial CarbonNanotubes = new IngotMaterial(709, "carbon_nanotubes", 0x2c2c2c, MaterialIconSet.SHINY, 5, of(), EXCLUDE_BLOCK_CRAFTING_RECIPES | SMELT_INTO_FLUID | GENERATE_FOIL, null);
+    public static final IngotMaterial Titanium50 = new IngotMaterial(708, "titanium50", Titanium.materialRGB, MaterialIconSet.SHINY, 5, of(), 0);
+    public static final IngotMaterial MetastableOganesson = new IngotMaterial(707, "metastable_oganesson", 0xE61C24, MaterialIconSet.SHINY, 7, of(), CORE_METAL, Element.valueOf("Og"), 38000);
+    public static final IngotMaterial MetastableFlerovium = new IngotMaterial(706, "metastable_flerovium", 0x521973, MaterialIconSet.SHINY, 7, of(), CORE_METAL, Element.valueOf("Fl"), 65000);
+    public static final IngotMaterial ElectricallyImpureCopper = new IngotMaterial(705, "electrically_impure_copper", 0x765A30, MaterialIconSet.DULL, 2, of(), GENERATE_PLATE);
+    public static final DustMaterial Rhodocrosite = new DustMaterial(704, "rhodocrosite", 0xff6699, MaterialIconSet.SHINY, 2, of(new MaterialStack(Manganese, 1), new MaterialStack(Carbon, 1), new MaterialStack(Oxygen, 3)), GENERATE_ORE);
+    public static final DustMaterial Fluorite = new DustMaterial(703, "fluorite", 0x009933, MaterialIconSet.SHINY, 2, of(new MaterialStack(Calcium, 1), new MaterialStack(Fluorine, 2)), GENERATE_ORE);
+    public static final DustMaterial Columbite = new DustMaterial(702, "columbite", 0xCCCC00, MaterialIconSet.SHINY, 2, of(new MaterialStack(Iron, 1), new MaterialStack(Niobium, 2), new MaterialStack(Oxygen, 6)), GENERATE_ORE);
+    public static final DustMaterial Pyrochlore = new DustMaterial(701, "pyrochlore", 0x996633, MaterialIconSet.SHINY, 2, of(), GENERATE_ORE);
 
 
     public static Material UEV = new MarkerMaterial("UEV");
@@ -811,24 +992,6 @@ public class GAMaterials implements IMaterialHandler {
         LuVSuperconductorBase.setCableProperties(32768, 4, 2);
         ZPMSuperconductorBase.setCableProperties(131072, 4, 2);
         UVSuperconductorBase.setCableProperties(524288, 4, 2);
-        UHVSuperconductorBase.setCableProperties(GAValues.V[GAValues.UHV], 4, 2);
-        UEVSuperconductorBase.setCableProperties(GAValues.V[GAValues.UEV], 4, 2);
-        UIVSuperconductorBase.setCableProperties(GAValues.V[GAValues.UIV], 4, 2);
-        UMVSuperconductorBase.setCableProperties(GAValues.V[GAValues.UMV], 4, 2);
-        UXVSuperconductorBase.setCableProperties(GAValues.V[GAValues.UXV], 4, 2);
-
-        TungstenTitaniumCarbide.setCableProperties(GAValues.V[GAValues.UHV], 4, 16);
-        AbyssalAlloy.setCableProperties(GAValues.V[GAValues.UHV], 2, 8);
-        EnrichedNaquadahAlloy.setCableProperties(GAValues.V[GAValues.UHV], 1, 4);
-
-        Pikyonium.setCableProperties(GAValues.V[GAValues.UEV], 4, 32);
-        TitanSteel.setCableProperties(GAValues.V[GAValues.UEV], 2, 16);
-
-        Cinobite.setCableProperties(GAValues.V[GAValues.UIV], 4, 64);
-        BlackTitanium.setCableProperties(GAValues.V[GAValues.UIV], 2, 32);
-
-
-        Neutronium.setCableProperties(524288 * 64, 2, 32);
 
         MVSuperconductor.setCableProperties(128, 4, 0);
         ignoreCable(MVSuperconductor);
@@ -844,16 +1007,31 @@ public class GAMaterials implements IMaterialHandler {
         ignoreCable(ZPMSuperconductor);
         UVSuperconductor.setCableProperties(524288, 4, 0);
         ignoreCable(UVSuperconductor);
-        UHVSuperconductor.setCableProperties(GAValues.V[GAValues.UHV], 4, 0);
         ignoreCable(UHVSuperconductor);
-        UEVSuperconductor.setCableProperties(GAValues.V[GAValues.UEV], 4, 0);
         ignoreCable(UEVSuperconductor);
-        UIVSuperconductor.setCableProperties(GAValues.V[GAValues.UIV], 4, 0);
         ignoreCable(UIVSuperconductor);
-        UMVSuperconductor.setCableProperties(GAValues.V[GAValues.UMV], 4, 0);
         ignoreCable(UMVSuperconductor);
-        UXVSuperconductor.setCableProperties(GAValues.V[GAValues.UXV], 4, 0);
         ignoreCable(UXVSuperconductor);
+
+
+        addCableAboveGTCELimit(UHVSuperconductorBase, new WireProperties(GAValues.V[GAValues.UHV], 4, 2));
+        addCableAboveGTCELimit(UEVSuperconductorBase, new WireProperties(GAValues.V[GAValues.UEV], 4, 2));
+        addCableAboveGTCELimit(UIVSuperconductorBase, new WireProperties(GAValues.V[GAValues.UIV], 4, 2));
+        addCableAboveGTCELimit(UMVSuperconductorBase, new WireProperties(GAValues.V[GAValues.UMV], 4, 2));
+        addCableAboveGTCELimit(UXVSuperconductorBase, new WireProperties(GAValues.V[GAValues.UXV], 4, 2));
+        addCableAboveGTCELimit(TungstenTitaniumCarbide, new WireProperties(GAValues.V[GAValues.UHV], 4, 16));
+        addCableAboveGTCELimit(AbyssalAlloy, new WireProperties(GAValues.V[GAValues.UHV], 2, 8));
+        addCableAboveGTCELimit(EnrichedNaquadahAlloy, new WireProperties(GAValues.V[GAValues.UHV], 1, 4));
+        addCableAboveGTCELimit(Pikyonium, new WireProperties(GAValues.V[GAValues.UEV], 4, 32));
+        addCableAboveGTCELimit(TitanSteel, new WireProperties(GAValues.V[GAValues.UEV], 2, 16));
+        addCableAboveGTCELimit(Cinobite, new WireProperties(GAValues.V[GAValues.UIV], 4, 64));
+        addCableAboveGTCELimit(BlackTitanium, new WireProperties(GAValues.V[GAValues.UIV], 2, 32));
+        addCableAboveGTCELimit(Neutronium, new WireProperties(GAValues.V[GAValues.UMV], 2, 32));
+        addCableAboveGTCELimit(UHVSuperconductor, new WireProperties(GAValues.V[GAValues.UHV], 4, 0));
+        addCableAboveGTCELimit(UEVSuperconductor, new WireProperties(GAValues.V[GAValues.UEV], 4, 0));
+        addCableAboveGTCELimit(UIVSuperconductor, new WireProperties(GAValues.V[GAValues.UIV], 4, 0));
+        addCableAboveGTCELimit(UMVSuperconductor, new WireProperties(GAValues.V[GAValues.UMV], 4, 0));
+        addCableAboveGTCELimit(UXVSuperconductor, new WireProperties(GAValues.V[GAValues.UXV], 4, 0));
 
 
         Radon.addFlag(GENERATE_PLASMA);
@@ -862,7 +1040,14 @@ public class GAMaterials implements IMaterialHandler {
         Oxygen.addFlag(GENERATE_PLASMA);
         Iron.addFlag(GENERATE_PLASMA);
         Nickel.addFlag(GENERATE_PLASMA);
-
+        Carbon.addFlag(GENERATE_PLASMA);
+        Magnesium.addFlag(GENERATE_PLASMA);
+        Silicon.addFlag(GENERATE_PLASMA);
+        Sulfur.addFlag(GENERATE_PLASMA);
+        Argon.addFlag(GENERATE_PLASMA);
+        Calcium.addFlag(GENERATE_PLASMA);
+        Titanium.addFlag(GENERATE_PLASMA);
+        Sulfur.addFlag(SMELT_INTO_FLUID);
 
         Tellurium.addFlag(GENERATE_ORE);
         Diatomite.addFlag(GENERATE_ORE);
@@ -885,7 +1070,7 @@ public class GAMaterials implements IMaterialHandler {
         Alunite.addFlag(GENERATE_ORE);
         GlauconiteSand.addFlag(GENERATE_ORE);
         Niter.addFlag(GENERATE_ORE);
-
+        Duranium.addFlag(GENERATE_FINE_WIRE);
 
         Spodumene.addFlag(DISABLE_DECOMPOSITION);
         Lepidolite.addFlag(DISABLE_DECOMPOSITION);
@@ -943,6 +1128,8 @@ public class GAMaterials implements IMaterialHandler {
         Lead.addFlag(GENERATE_DENSE);
         StainlessSteel.addFlag(GENERATE_DENSE);
 
+        Tritanium.addFlag(CORE_METAL);
+        Duranium.addFlag(CORE_METAL);
         Apatite.addFlag(GENERATE_ROD);
         Iron.addFlag(GENERATE_LONG_ROD);
         Bronze.addFlag(GENERATE_LONG_ROD);
@@ -959,6 +1146,8 @@ public class GAMaterials implements IMaterialHandler {
         RockSalt.addOreByProducts(Borax);
         Lepidolite.addOreByProducts(Boron);
         Zirkelite.addOreByProducts(Thorium, Zirconium, Cerium);
+        Caliche.addOreByProducts(Niter, Saltpeter, Lepidolite);
+        Zircon.addOreByProducts(Cobalt, Lead, UraniumRadioactive.getMaterial());
 
         OrePrefix.block.setIgnored(Pyrotheum);
         OrePrefix.block.setIgnored(Cryotheum);
@@ -1238,6 +1427,13 @@ public class GAMaterials implements IMaterialHandler {
             OrePrefix.cableGtQuadruple.setIgnored(m);
             OrePrefix.cableGtOctal.setIgnored(m);
             OrePrefix.cableGtHex.setIgnored(m);
+        }
+    }
+
+    public static void addCableAboveGTCELimit(Material m, WireProperties p) {
+
+        if (m instanceof IngotMaterial) {
+            ((IngotMaterial) m).setCableProperties(p.voltage, p.amperage, p.lossPerBlock);
         }
     }
 
