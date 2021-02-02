@@ -10,12 +10,14 @@ import gregicadditions.item.GAMetaItems;
 import gregicadditions.network.IPSaveData;
 import gregicadditions.network.MessageReservoirListSync;
 import gregicadditions.network.NetworkHandler;
+import gregicadditions.pipelike.cable.GAItemBlockCable;
 import gregicadditions.pipelike.opticalfiber.ItemBlockOpticalFiber;
 import gregicadditions.recipes.*;
 import gregicadditions.utils.GALog;
 import gregicadditions.worldgen.PumpjackHandler;
 import gregicadditions.worldgen.StoneGenEvents;
 import gregicadditions.worldgen.WorldGenRegister;
+import gregtech.api.unification.ore.OrePrefix;
 import gregtech.common.blocks.VariantItemBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -75,6 +77,7 @@ public class CommonProxy {
         IForgeRegistry<Block> registry = event.getRegistry();
         registry.register(GAMetaBlocks.MUTLIBLOCK_CASING);
         registry.register(GAMetaBlocks.MUTLIBLOCK_CASING2);
+        registry.register(GAMetaBlocks.SIMPLE_BLOCK);
         registry.register(GAMetaBlocks.QUANTUM_CASING);
         registry.register(GAMetaBlocks.REACTOR_CASING);
         registry.register(GAMetaBlocks.FUSION_CASING);
@@ -97,6 +100,7 @@ public class CommonProxy {
         registry.register(OPTICAL_FIBER);
         GAMetaBlocks.METAL_CASING.values().stream().distinct().forEach(registry::register);
         GA_ORES.forEach(registry::register);
+        registry.register(GAMetaBlocks.GA_CABLE);
     }
 
 
@@ -105,9 +109,11 @@ public class CommonProxy {
         GALog.logger.info("Registering Items...");
         IForgeRegistry<Item> registry = event.getRegistry();
 
+        registry.register(createItemBlock(GAMetaBlocks.GA_CABLE, GAItemBlockCable::new));
         registry.register(createItemBlock(GAMetaBlocks.OPTICAL_FIBER, ItemBlockOpticalFiber::new));
         registry.register(createItemBlock(GAMetaBlocks.MUTLIBLOCK_CASING, VariantItemBlock::new));
         registry.register(createItemBlock(GAMetaBlocks.MUTLIBLOCK_CASING2, VariantItemBlock::new));
+        registry.register(createItemBlock(GAMetaBlocks.SIMPLE_BLOCK, VariantItemBlock::new));
         registry.register(createItemBlock(GAMetaBlocks.QUANTUM_CASING, VariantItemBlock::new));
         registry.register(createItemBlock(GAMetaBlocks.REACTOR_CASING, VariantItemBlock::new));
         registry.register(createItemBlock(GAMetaBlocks.MACHINE_CASING, VariantItemBlock::new));
@@ -162,9 +168,11 @@ public class CommonProxy {
         RecipeHandler.register();
         NuclearHandler.register();
         OreRecipeHandler.register();
+        GARecipeRemoval.init();
         GARecipeAddition.init();
         GAMetaItems.registerOreDict();
         GAMetaBlocks.registerOreDict();
+        OrePrefix.runMaterialHandlers();
         GAMetaItems.registerRecipes();
         GARecipeAddition.init2();
         GARecipeAddition.init3();

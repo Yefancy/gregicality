@@ -6,7 +6,7 @@ import codechicken.lib.render.pipeline.IVertexOperation;
 import codechicken.lib.vec.Matrix4;
 import gregicadditions.GAConfig;
 import gregicadditions.GAValues;
-import gregicadditions.item.behavior.DataStickFluidSamplerBehavior;
+import gregicadditions.item.behaviors.DataStickFluidSamplerBehavior;
 import gregicadditions.utils.GALog;
 import gregicadditions.worldgen.DimensionChunkCoords;
 import gregicadditions.worldgen.PumpjackHandler;
@@ -124,6 +124,7 @@ public class MetaTileEntitySolarSampler extends MetaTileEntity implements IWorka
         return false;
     }
 
+    @Override
     protected IItemHandlerModifiable createImportItemHandler() {
         return new ItemStackHandler(1) {
             @Override
@@ -133,9 +134,15 @@ public class MetaTileEntitySolarSampler extends MetaTileEntity implements IWorka
         };
     }
 
+
     @Override
     protected IItemHandlerModifiable createExportItemHandler() {
-        return new ItemStackHandler(1);
+        return new ItemStackHandler(1) {
+            @Override
+            public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+                return false;
+            }
+        };
     }
 
     @Override

@@ -3,7 +3,9 @@ package gregicadditions.jei.multi.miner;
 import com.google.common.collect.Lists;
 import gregicadditions.item.GAMetaBlocks;
 import gregicadditions.machines.GATileEntities;
+import gregicadditions.machines.multi.miner.MetaTileEntityVoidMiner;
 import gregtech.api.metatileentity.multiblock.MultiblockControllerBase;
+import gregtech.api.unification.material.type.Material;
 import gregtech.common.blocks.MetaBlocks;
 import gregtech.common.metatileentities.MetaTileEntities;
 import gregtech.integration.jei.multiblock.MultiblockInfoPage;
@@ -18,6 +20,7 @@ import static gregicadditions.GAMaterials.Staballoy;
 import static gregtech.api.unification.material.Materials.TungstenSteel;
 
 public class VoidMinerInfo extends MultiblockInfoPage {
+
 
     @Override
     public MultiblockControllerBase getController() {

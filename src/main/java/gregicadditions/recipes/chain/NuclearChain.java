@@ -97,15 +97,9 @@ public class NuclearChain {
                 .outputs(OreDictUnifier.get(dust, SodiumPotassiumAlloy, 10))
                 .buildAndRegister();
 
-        CHEMICAL_RECIPES.recipeBuilder().duration(2000).EUt(240)
-                .input(dust, Lithium)
-                .fluidInputs(Water.getFluid(1000))
-                .outputs(OreDictUnifier.get(dust, LithiumHydroxide))
-                .fluidOutputs(Oxygen.getFluid(1000))
-                .buildAndRegister();
 
         CHEMICAL_RECIPES.recipeBuilder().duration(300)
-                .input(dust, LithiumHydroxide)
+                .fluidInputs(LithiumHydroxideSolution.getFluid(1000))
                 .fluidInputs(HydrofluoricAcid.getFluid(1000))
                 .outputs(OreDictUnifier.get(dust, LithiumFluoride))
                 .fluidOutputs(Water.getFluid(1000))
@@ -154,7 +148,6 @@ public class NuclearChain {
         ModHandler.addSmeltingRecipe(OreDictUnifier.get(ingot, Protactinium.getMaterial()), OreDictUnifier.get(ingot, Protactinium233.getMaterial()));
 
 
-
         CHEMICAL_DEHYDRATOR_RECIPES.recipeBuilder().EUt(32).duration(3000)
                 .inputs(NUCLEAR_WASTE.getStackForm())
                 .chancedOutput(NUCLEAR_WASTE_LANTHANIDE_A.getStackForm(), 1111, 111)
@@ -169,7 +162,7 @@ public class NuclearChain {
 
         CHEMICAL_DEHYDRATOR_RECIPES.recipeBuilder().EUt(32).duration(3000)
                 .inputs(NUCLEAR_WASTE_HEAVY_METAL.getStackForm())
-                .fluidOutputs(Mercury.getFluid(36))
+                .fluidOutputs(Mercury.getFluid(250))
                 .chancedOutput(OreDictUnifier.get(dustTiny, Zinc, 2), 5555, 200)
                 .chancedOutput(OreDictUnifier.get(dustTiny, Gallium, 2), 5555, 300)
                 .chancedOutput(OreDictUnifier.get(dustTiny, Cadmium, 2), 5555, 400)
@@ -209,7 +202,7 @@ public class NuclearChain {
                 .chancedOutput(OreDictUnifier.get(dustTiny, Hafnium, 2), 6250, 300)
                 .chancedOutput(OreDictUnifier.get(dustTiny, Tantalum, 2), 6250, 400)
                 .chancedOutput(OreDictUnifier.get(dustTiny, Tungsten, 2), 6250, 500)
-                //.chancedOutput(OreDictUnifier.get(dustTiny, Rhenium, 2), 6250, 600)
+                .chancedOutput(OreDictUnifier.get(dustTiny, Rhenium, 2), 6250, 600)// can stay here, the change to get infinite rhenium is really small
                 .chancedOutput(OreDictUnifier.get(dustTiny, Osmium, 2), 6250, 700)
                 .chancedOutput(OreDictUnifier.get(dustTiny, Iridium, 2), 6250, 800)
                 .chancedOutput(OreDictUnifier.get(dustTiny, Platinum, 2), 6250, 900)
@@ -260,9 +253,9 @@ public class NuclearChain {
 
         CENTRIFUGE_RECIPES.recipeBuilder().EUt(32).duration(3000)
                 .inputs(NUCLEAR_WASTE_REACTIVE_NONMETAL.getStackForm())
-                .fluidOutputs(Krypton.getFluid(36))
-                .fluidOutputs(Xenon.getFluid(72))
-                .fluidOutputs(Radon.getFluid(144))
+                .fluidOutputs(Krypton.getFluid(250))
+                .fluidOutputs(Xenon.getFluid(500))
+                .fluidOutputs(Radon.getFluid(1000))
                 .chancedOutput(OreDictUnifier.get(dustTiny, Selenium, 2), 6250, 800)
                 .chancedOutput(OreDictUnifier.get(dustTiny, Bromine, 2), 6250, 900)
                 .chancedOutput(OreDictUnifier.get(dustTiny, Iodine, 2), 6250, 1000)

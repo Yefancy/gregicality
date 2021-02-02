@@ -5,7 +5,9 @@ import codechicken.lib.render.pipeline.IVertexOperation;
 import codechicken.lib.vec.Matrix4;
 import gregicadditions.GAValues;
 import gregicadditions.capabilities.impl.GAMultiblockRecipeLogic;
+import gregicadditions.capabilities.impl.GARecipeMapMultiblockController;
 import gregicadditions.client.ClientHandler;
+import gregtech.api.GTValues;
 import gregtech.api.capability.IEnergyContainer;
 import gregtech.api.capability.IMultipleTankHandler;
 import gregtech.api.capability.impl.EnergyContainerHandler;
@@ -16,7 +18,6 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntityHolder;
 import gregtech.api.metatileentity.multiblock.IMultiblockPart;
 import gregtech.api.metatileentity.multiblock.MultiblockAbility;
-import gregtech.api.metatileentity.multiblock.RecipeMapMultiblockController;
 import gregtech.api.multiblock.BlockPattern;
 import gregtech.api.multiblock.FactoryBlockPattern;
 import gregtech.api.multiblock.PatternMatchContext;
@@ -38,7 +39,7 @@ import java.util.List;
 
 import static gregtech.api.multiblock.BlockPattern.RelativeDirection.*;
 
-public class TileEntityFusionReactor extends RecipeMapMultiblockController {
+public class TileEntityFusionReactor extends GARecipeMapMultiblockController {
     private final int tier;
     private EnergyContainerList inputEnergyContainers;
     private int heat = 0; // defined in TileEntityFusionReactor but serialized in FusionRecipeLogic
@@ -85,7 +86,7 @@ public class TileEntityFusionReactor extends RecipeMapMultiblockController {
                 .where('c', statePredicate(getCoilState()))
                 .where('O', statePredicate(getCasingState()).or(abilityPartPredicate(MultiblockAbility.EXPORT_FLUIDS)))
                 .where('E', statePredicate(getCasingState()).or(tilePredicate((state, tile) -> {
-                    for (int i = tier; i < GAValues.V.length; i++) {
+                    for (int i = tier; i < GTValues.V.length; i++) {
                         if (tile.metaTileEntityId.equals(MetaTileEntities.ENERGY_INPUT_HATCH[i].metaTileEntityId))
                             return true;
                     }
@@ -242,5 +243,9 @@ public class TileEntityFusionReactor extends RecipeMapMultiblockController {
             super.deserializeNBT(compound);
             heat = compound.getInteger("Heat");
         }
+    }
+
+    public int getHeat() {
+        return heat;
     }
 }

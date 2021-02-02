@@ -2,6 +2,7 @@ package gregicadditions.machines.multi.simple;
 
 import gregicadditions.GAMaterials;
 import gregicadditions.capabilities.impl.GAMultiblockRecipeLogic;
+import gregicadditions.capabilities.impl.GARecipeMapMultiblockController;
 import gregicadditions.item.components.*;
 import gregicadditions.utils.GALog;
 import gregtech.api.capability.IMultipleTankHandler;
@@ -33,7 +34,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
-abstract public class LargeSimpleRecipeMapMultiblockController extends RecipeMapMultiblockController {
+abstract public class LargeSimpleRecipeMapMultiblockController extends GARecipeMapMultiblockController {
 
     private int EUtPercentage = 100;
     private int durationPercentage = 100;
@@ -197,6 +198,12 @@ abstract public class LargeSimpleRecipeMapMultiblockController extends RecipeMap
         };
     }
 
+    @Override
+    public void invalidateStructure() {
+        super.invalidateStructure();
+        this.maxVoltage = 0;
+    }
+
 
     @Override
     public boolean checkRecipe(Recipe recipe, boolean consumeIfSuccess) {
@@ -227,6 +234,22 @@ abstract public class LargeSimpleRecipeMapMultiblockController extends RecipeMap
             this.recipeMap = tileEntity.recipeMap;
         }
 
+        public int getEUtPercentage() {
+            return EUtPercentage;
+        }
+
+        public int getDurationPercentage() {
+            return durationPercentage;
+        }
+
+        public int getChancePercentage() {
+            return chancePercentage;
+        }
+
+        public int getStack() {
+            return stack;
+        }
+
         @Override
         /**
          * From multi-smelter.
@@ -234,6 +257,8 @@ abstract public class LargeSimpleRecipeMapMultiblockController extends RecipeMap
          */
         protected void trySearchNewRecipe() {
             long maxVoltage = getMaxVoltage();
+            if (metaTileEntity instanceof LargeSimpleRecipeMapMultiblockController)
+                maxVoltage = ((LargeSimpleRecipeMapMultiblockController) metaTileEntity).maxVoltage;
             Recipe currentRecipe = null;
             IItemHandlerModifiable importInventory = getInputInventory();
             IMultipleTankHandler importFluids = getInputTank();
@@ -432,7 +457,10 @@ abstract public class LargeSimpleRecipeMapMultiblockController extends RecipeMap
         }
 
         protected void setupRecipe(Recipe recipe) {
-            int[] resultOverclock = calculateOverclock(recipe.getEUt(), getMaxVoltage(), recipe.getDuration());
+            long maxVoltage = getMaxVoltage();
+            if (metaTileEntity instanceof LargeSimpleRecipeMapMultiblockController)
+                maxVoltage = ((LargeSimpleRecipeMapMultiblockController) metaTileEntity).maxVoltage;
+            int[] resultOverclock = calculateOverclock(recipe.getEUt(), maxVoltage, recipe.getDuration());
             this.progressTime = 1;
             setMaxProgress(resultOverclock[1]);
             this.recipeEUt = resultOverclock[0];

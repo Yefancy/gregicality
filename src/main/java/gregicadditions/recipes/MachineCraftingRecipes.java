@@ -4,10 +4,9 @@ import gregicadditions.GAConfig;
 import gregicadditions.GAEnums;
 import gregicadditions.GAMaterials;
 import gregicadditions.GAValues;
-import gregicadditions.item.GAMachineCasing;
-import gregicadditions.item.GAMetaBlocks;
-import gregicadditions.item.GAMetaItems;
-import gregicadditions.item.GAMultiblockCasing;
+import gregicadditions.item.*;
+import gregicadditions.item.fusion.GAFusionCasing;
+import gregicadditions.item.components.MotorCasing;
 import gregicadditions.machines.GATileEntities;
 import gregicadditions.machines.energyconverter.utils.EnergyConverterCraftingHelper;
 import gregicadditions.machines.energyconverter.utils.EnergyConverterType;
@@ -38,7 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static gregicadditions.GAMaterials.*;
-import static gregicadditions.machines.GATileEntities.THERMAL_CENTRIFUGE;
+import static gregicadditions.item.GAMetaItems.*;
 import static gregicadditions.recipes.GACraftingComponents.*;
 import static gregicadditions.recipes.GARecipeMaps.ASSEMBLY_LINE_RECIPES;
 import static gregtech.api.GTValues.L;
@@ -166,6 +165,7 @@ public class MachineCraftingRecipes {
         ModHandler.addShapedRecipe("ga_casing_uv", MetaBlocks.MACHINE_CASING.getItemVariant(UV), "PPP", "PwP", "PPP", 'P', new UnificationEntry(plate, Tritanium));
         ModHandler.addShapedRecipe("ga_casing_uhv", GAMetaBlocks.MACHINE_CASING.getItemVariant(GAMachineCasing.CasingType.CASING_UHV), "PPP", "PwP", "PPP", 'P', new UnificationEntry(plate, Seaborgium));
         ModHandler.addShapedRecipe("ga_casing_uev", GAMetaBlocks.MACHINE_CASING.getItemVariant(GAMachineCasing.CasingType.CASING_UEV), "PPP", "PwP", "PPP", 'P', new UnificationEntry(plate, Bohrium));
+        ModHandler.addShapedRecipe("ga_casing_uiv", GAMetaBlocks.MACHINE_CASING.getItemVariant(GAMachineCasing.CasingType.CASING_UIV), "PPP", "PwP", "PPP", 'P', new UnificationEntry(plate, Quantum));
 
         ModHandler.addShapedRecipe("ga_filtered_fluid_export_hatch_ulv", GATileEntities.OUTPUT_HATCH_FILTERED.get(GAValues.ULV).getStackForm(), "F", "M", "G", 'M', MetaTileEntities.HULL[GAValues.ULV].getStackForm(), 'G', new ItemStack(Blocks.GLASS, 1), 'F', FLUID_FILTER);
         ModHandler.addShapedRecipe("ga_filtered_fluid_export_hatch_lv", GATileEntities.OUTPUT_HATCH_FILTERED.get(GAValues.LV).getStackForm(), "F", "M", "G", 'M', MetaTileEntities.HULL[GAValues.LV].getStackForm(), 'G', new ItemStack(Blocks.GLASS, 1), 'F', FLUID_FILTER);
@@ -176,9 +176,30 @@ public class MachineCraftingRecipes {
         ModHandler.addShapedRecipe("ga_filtered_fluid_export_hatch_luv", GATileEntities.OUTPUT_HATCH_FILTERED.get(GAValues.LuV).getStackForm(), "F", "M", "G", 'M', MetaTileEntities.HULL[GAValues.LuV].getStackForm(), 'G', new ItemStack(Blocks.GLASS), 'F', FLUID_FILTER);
         ModHandler.addShapedRecipe("ga_filtered_fluid_export_hatch_zpm", GATileEntities.OUTPUT_HATCH_FILTERED.get(GAValues.ZPM).getStackForm(), "F", "M", "G", 'M', MetaTileEntities.HULL[GAValues.ZPM].getStackForm(), 'G', new ItemStack(Blocks.GLASS), 'F', FLUID_FILTER);
         ModHandler.addShapedRecipe("ga_filtered_fluid_export_hatch_uv", GATileEntities.OUTPUT_HATCH_FILTERED.get(GAValues.UV).getStackForm(), "F", "M", "G", 'M', MetaTileEntities.HULL[GAValues.UV].getStackForm(), 'G', new ItemStack(Blocks.GLASS), 'F', FLUID_FILTER);
-        ModHandler.addShapedRecipe("ga_filtered_fluid_export_hatch_uv", GATileEntities.OUTPUT_HATCH_FILTERED.get(GAValues.UHV).getStackForm(), "F", "M", "G", 'M', GATileEntities.GA_HULLS[0].getStackForm(), 'G', new ItemStack(Blocks.GLASS), 'F', FLUID_FILTER);
-        ModHandler.addShapedRecipe("ga_filtered_fluid_export_hatch_uv", GATileEntities.OUTPUT_HATCH_FILTERED.get(GAValues.UEV).getStackForm(), "F", "M", "G", 'M', GATileEntities.GA_HULLS[1].getStackForm(), 'G', new ItemStack(Blocks.GLASS), 'F', FLUID_FILTER);
-        ModHandler.addShapedRecipe("ga_filtered_fluid_export_hatch_max", GATileEntities.OUTPUT_HATCH_FILTERED.get(GTValues.MAX).getStackForm(), "F", "M", "G", 'M', MetaTileEntities.HULL[GTValues.MAX].getStackForm(), 'G', new ItemStack(Blocks.GLASS), 'F', FLUID_FILTER);
+        ModHandler.addShapedRecipe("ga_filtered_fluid_export_hatch_uhv", GATileEntities.OUTPUT_HATCH_FILTERED.get(GAValues.UHV + 1).getStackForm(), "F", "M", "G", 'M', GATileEntities.GA_HULLS[0].getStackForm(), 'G', new ItemStack(Blocks.GLASS), 'F', FLUID_FILTER);
+        ModHandler.addShapedRecipe("ga_filtered_fluid_export_hatch_uev", GATileEntities.OUTPUT_HATCH_FILTERED.get(GAValues.UEV + 1).getStackForm(), "F", "M", "G", 'M', GATileEntities.GA_HULLS[1].getStackForm(), 'G', new ItemStack(Blocks.GLASS), 'F', FLUID_FILTER);
+        ModHandler.addShapedRecipe("ga_filtered_fluid_export_hatch_uiv", GATileEntities.OUTPUT_HATCH_FILTERED.get(GAValues.UIV + 1).getStackForm(), "F", "M", "G", 'M', GATileEntities.GA_HULLS[2].getStackForm(), 'G', new ItemStack(Blocks.GLASS), 'F', FLUID_FILTER);
+        ModHandler.addShapedRecipe("ga_filtered_fluid_export_hatch_max", GATileEntities.OUTPUT_HATCH_FILTERED.get(9).getStackForm(), "F", "M", "G", 'M', MetaTileEntities.HULL[GTValues.MAX].getStackForm(), 'G', new ItemStack(Blocks.GLASS), 'F', FLUID_FILTER);
+
+        //energy input hatch
+        ModHandler.addShapedRecipe("ga_energy_input_hatch_uhv", GATileEntities.ENERGY_INPUT[0].getStackForm(), "   ", "CM ", "   ", 'M', GATileEntities.GA_HULLS[0].getStackForm(), 'C', new UnificationEntry(cableGtSingle, TungstenTitaniumCarbide));
+        ModHandler.addShapedRecipe("ga_energy_input_hatch_uev", GATileEntities.ENERGY_INPUT[1].getStackForm(), "   ", "CM ", "   ", 'M', GATileEntities.GA_HULLS[1].getStackForm(), 'C', new UnificationEntry(cableGtSingle, Pikyonium));
+        ModHandler.addShapedRecipe("ga_energy_input_hatch_uiv", GATileEntities.ENERGY_INPUT[2].getStackForm(), "   ", "CM ", "   ", 'M', GATileEntities.GA_HULLS[2].getStackForm(), 'C', new UnificationEntry(cableGtSingle, Cinobite));
+//        ModHandler.addShapedRecipe("ga_energy_input_hatch_max", GATileEntities.ENERGY_INPUT[GTValues.MAX].getStackForm(), "   ", "CM ", "   ", 'M', MetaTileEntities.HULL[GTValues.MAX].getStackForm(), 'C', new UnificationEntry(cableGtSingle, Neutronium));
+
+        //energy output hatch
+        ModHandler.addShapedRecipe("ga_energy_output_hatch_uhv", GATileEntities.ENERGY_OUTPUT[0].getStackForm(), "   ", " MC", "   ", 'M', GATileEntities.GA_HULLS[0].getStackForm(), 'C', new UnificationEntry(cableGtSingle, TungstenTitaniumCarbide));
+        ModHandler.addShapedRecipe("ga_energy_output_hatch_uev", GATileEntities.ENERGY_OUTPUT[1].getStackForm(), "   ", " MC", "   ", 'M', GATileEntities.GA_HULLS[1].getStackForm(), 'C', new UnificationEntry(cableGtSingle, Pikyonium));
+        ModHandler.addShapedRecipe("ga_energy_output_hatch_uiv", GATileEntities.ENERGY_OUTPUT[2].getStackForm(), "   ", " MC", "   ", 'M', GATileEntities.GA_HULLS[2].getStackForm(), 'C', new UnificationEntry(cableGtSingle, Cinobite));
+//        ModHandler.addShapedRecipe("ga_energy_output_hatch_max", GATileEntities.ENERGY_OUTPUT[GTValues.MAX].getStackForm(), "   ", " MC", "   ", 'M', MetaTileEntities.HULL[GTValues.MAX].getStackForm(), 'C', new UnificationEntry(wireGtSingle, Neutronium));
+
+
+        //qubit input hatch
+        ModHandler.addShapedRecipe("ga_qubit_input_hatch", GATileEntities.QBIT_INPUT_HATCH[0].getStackForm(), "   ", "CM ", "   ", 'M', MetaTileEntities.HULL[GTValues.ZPM].getStackForm(), 'C', new UnificationEntry(GAEnums.GAOrePrefix.opticalFiberHex));
+
+        //qubit output hatch
+        ModHandler.addShapedRecipe("ga_qubit_output_hatch", GATileEntities.QBIT_OUTPUT_HATCH[0].getStackForm(), "   ", " MC", "   ", 'M', MetaTileEntities.HULL[GTValues.ZPM].getStackForm(), 'C', new UnificationEntry(GAEnums.GAOrePrefix.opticalFiberSingle));
+
 
         RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().EUt(16).input(plate, WroughtIron, 8).outputs(MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.ULV)).circuitMeta(8).duration(25).buildAndRegister();
         RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().EUt(16).input(plate, Steel, 8).outputs(MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.LV)).circuitMeta(8).duration(50).buildAndRegister();
@@ -191,6 +212,7 @@ public class MachineCraftingRecipes {
         RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().EUt(16).input(plate, Tritanium, 8).outputs(MetaBlocks.MACHINE_CASING.getItemVariant(BlockMachineCasing.MachineCasingType.UV)).circuitMeta(8).duration(50).buildAndRegister();
         RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().EUt(16).input(plate, Seaborgium, 8).outputs(GAMetaBlocks.MACHINE_CASING.getItemVariant(GAMachineCasing.CasingType.CASING_UHV)).circuitMeta(8).duration(50).buildAndRegister();
         RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().EUt(16).input(plate, Bohrium, 8).outputs(GAMetaBlocks.MACHINE_CASING.getItemVariant(GAMachineCasing.CasingType.CASING_UEV)).circuitMeta(8).duration(50).buildAndRegister();
+        RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().EUt(16).input(plate, Quantum, 8).outputs(GAMetaBlocks.MACHINE_CASING.getItemVariant(GAMachineCasing.CasingType.CASING_UIV)).circuitMeta(8).duration(50).buildAndRegister();
 
 
         ModHandler.addShapedRecipe("ga_hull_ulv", MetaTileEntities.HULL[GAValues.ULV].getStackForm(), "PHP", "CMC", 'M', MetaBlocks.MACHINE_CASING.getItemVariant(ULV), 'C', new UnificationEntry(cableGtSingle, RedAlloy), 'H', new UnificationEntry(plate, WroughtIron), 'P', new UnificationEntry(plate, Wood));
@@ -202,8 +224,9 @@ public class MachineCraftingRecipes {
         ModHandler.addShapedRecipe("ga_hull_luv", MetaTileEntities.HULL[GAValues.LuV].getStackForm(), "PHP", "CMC", 'M', MetaBlocks.MACHINE_CASING.getItemVariant(LuV), 'C', new UnificationEntry(cableGtSingle, VanadiumGallium), 'H', new UnificationEntry(plate, RhodiumPlatedPalladium), 'P', new UnificationEntry(plate, PolyvinylChloride));
         ModHandler.addShapedRecipe("ga_hull_zpm", MetaTileEntities.HULL[GAValues.ZPM].getStackForm(), "PHP", "CMC", 'M', MetaBlocks.MACHINE_CASING.getItemVariant(ZPM), 'C', new UnificationEntry(cableGtSingle, Naquadah), 'H', new UnificationEntry(plate, Osmiridium), 'P', new UnificationEntry(plate, PolyphenyleneSulfide));
         ModHandler.addShapedRecipe("ga_hull_uv", MetaTileEntities.HULL[GAValues.UV].getStackForm(), "PHP", "CMC", 'M', MetaBlocks.MACHINE_CASING.getItemVariant(UV), 'C', new UnificationEntry(cableGtSingle, NaquadahAlloy), 'H', new UnificationEntry(plate, Tritanium), 'P', new UnificationEntry(plate, PolyphenyleneSulfide));
-        ModHandler.addShapedRecipe("ga_hull_uhv", GATileEntities.GA_HULLS[0].getStackForm(), "PHP", "CMC", 'M', GAMetaBlocks.MACHINE_CASING.getItemVariant(GAMachineCasing.CasingType.CASING_UHV), 'C', new UnificationEntry(cableGtSingle, Duranium), 'H', new UnificationEntry(plate, Seaborgium), 'P', new UnificationEntry(plate, Polyetheretherketone));
-        ModHandler.addShapedRecipe("ga_hull_uev", GATileEntities.GA_HULLS[1].getStackForm(), "PHP", "CMC", 'M', GAMetaBlocks.MACHINE_CASING.getItemVariant(GAMachineCasing.CasingType.CASING_UEV), 'C', new UnificationEntry(cableGtQuadruple, Duranium), 'H', new UnificationEntry(plate, Bohrium), 'P', new UnificationEntry(plate, Polyetheretherketone));
+        ModHandler.addShapedRecipe("ga_hull_uhv", GATileEntities.GA_HULLS[0].getStackForm(), "PHP", "CMC", 'M', GAMetaBlocks.MACHINE_CASING.getItemVariant(GAMachineCasing.CasingType.CASING_UHV), 'C', new UnificationEntry(cableGtSingle, TungstenTitaniumCarbide), 'H', new UnificationEntry(plate, Seaborgium), 'P', new UnificationEntry(plate, Polyetheretherketone));
+        ModHandler.addShapedRecipe("ga_hull_uev", GATileEntities.GA_HULLS[1].getStackForm(), "PHP", "CMC", 'M', GAMetaBlocks.MACHINE_CASING.getItemVariant(GAMachineCasing.CasingType.CASING_UEV), 'C', new UnificationEntry(cableGtQuadruple, Pikyonium), 'H', new UnificationEntry(plate, Bohrium), 'P', new UnificationEntry(plate, Polyetheretherketone));
+        ModHandler.addShapedRecipe("ga_hull_uiv", GATileEntities.GA_HULLS[2].getStackForm(), "PHP", "CMC", 'M', GAMetaBlocks.MACHINE_CASING.getItemVariant(GAMachineCasing.CasingType.CASING_UIV), 'C', new UnificationEntry(cableGtQuadruple, Cinobite), 'H', new UnificationEntry(plate, Quantum), 'P', new UnificationEntry(plate, Zylon));
 
         //Power Manipulation Machines
         ItemStack last_bat = (GAConfig.GT5U.replaceUVwithMAXBat ? GAMetaItems.MAX_BATTERY : MetaItems.ZPM2).getStackForm();
@@ -305,6 +328,8 @@ public class MachineCraftingRecipes {
         RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().fluidInputs(Steel.getFluid(144 * 4)).input(OrePrefix.valueOf("gtMetalCasing"), Steel, 2).input(plate, Aluminium, 32).input(gear, Steel, 4).input(dust, CobaltBrass, 16).inputs(GAMetaBlocks.MUTLIBLOCK_CASING.getItemVariant(GAMultiblockCasing.CasingType.TIERED_HULL_LV)).outputs(GATileEntities.CHEMICAL_PLANT.getStackForm()).duration(2400).EUt(120).buildAndRegister();
         ModHandler.addShapedRecipe("ga_large_forge_hammer", GATileEntities.LARGE_FORGE_HAMMER.getStackForm(), "PCP", "CHC", "PCP", 'H', MetaTileEntities.FORGE_HAMMER[0].getStackForm(), 'C', new UnificationEntry(circuit, Tier.Basic), 'P', MetaItems.ELECTRIC_PISTON_MV);
         ModHandler.addShapedRecipe("ga_battery_tower", GATileEntities.BATTERY_TOWER.getStackForm(), "PCP", "CHC", "PCP", 'H', MetaTileEntities.HULL[GAValues.HV].getStackForm(), 'C', new UnificationEntry(circuit, Tier.Extreme), 'P', new UnificationEntry(OrePrefix.valueOf("gtMetalCasing"), Talonite));
+        ModHandler.addShapedRecipe("ga_gas_centrifuge", GATileEntities.GAS_CENTRIFUGE.getStackForm(), "PCP", "CHC", "PDP", 'H', MetaTileEntities.HULL[GAValues.HV].getStackForm(), 'C', MetaTileEntities.THERMAL_CENTRIFUGE[GAValues.HV].getStackForm(), 'D', MetaTileEntities.CENTRIFUGE[GAValues.HV].getStackForm(), 'P', GAMetaBlocks.MOTOR_CASING.getItemVariant(MotorCasing.CasingType.MOTOR_HV));
+        ModHandler.addShapedRecipe("ga_large_packager", GATileEntities.LARGE_PACKAGER.getStackForm(), "BCR", "PHU", "CMC", 'H', MetaTileEntities.HULL[GAValues.LuV].getStackForm(), 'C', new UnificationEntry(circuit, Tier.Master), 'P', GAConfig.GT5U.highTierPackers ? GATileEntities.PACKER[GAValues.EV].getMetaTileEntity().getStackForm() : MetaTileEntities.PACKER[GAValues.EV - 1].getStackForm(), 'U', GAConfig.GT5U.highTierUnpackers ? GATileEntities.UNPACKER[GAValues.EV].getMetaTileEntity().getStackForm() : MetaTileEntities.UNPACKER[GAValues.EV - 1].getStackForm(), 'B' , MetaItems.CONVEYOR_MODULE_LUV, 'R', MetaItems.ROBOT_ARM_LUV, 'M', new UnificationEntry(plate, GAMaterials.HG1223));
 
         GARecipeMaps.ASSEMBLY_LINE_RECIPES.recipeBuilder().duration(1200).EUt(30720)
                 .fluidInputs(Lubricant.getFluid(2304),
@@ -333,18 +358,96 @@ public class MachineCraftingRecipes {
                 .fluidInputs(GAMaterials.HastelloyN.getFluid(144 * 4))
                 .input(OrePrefix.valueOf("gtMetalCasing"), GAMaterials.Staballoy, 2)
                 .inputs(MetaItems.SENSOR_UV.getStackForm(1))
-                .inputs(OreDictUnifier.get(wireGtSingle, MarkerMaterials.Tier.Superconductor, 64))
-                .inputs(OreDictUnifier.get(wireGtSingle, MarkerMaterials.Tier.Superconductor, 64))
-                .inputs(OreDictUnifier.get(wireGtSingle, MarkerMaterials.Tier.Superconductor, 64))
-                .inputs(OreDictUnifier.get(wireGtSingle, MarkerMaterials.Tier.Superconductor, 64))
+                .inputs(OreDictUnifier.get(wireGtSingle, UVSuperconductor, 64))
+                .inputs(OreDictUnifier.get(wireGtSingle, UVSuperconductor, 64))
+                .inputs(OreDictUnifier.get(wireGtSingle, UVSuperconductor, 64))
+                .inputs(OreDictUnifier.get(wireGtSingle, UVSuperconductor, 64))
                 .inputs(GATileEntities.LARGE_MINER[0].getStackForm())
                 .inputs(GATileEntities.LARGE_MINER[1].getStackForm())
                 .inputs(GATileEntities.LARGE_MINER[2].getStackForm())
-                .inputs(CountableIngredient.from(circuit, Tier.Superconductor))
-                .inputs(CountableIngredient.from(circuit, Tier.Superconductor))
-                .inputs(CountableIngredient.from(circuit, Tier.Superconductor))
-                .inputs(CountableIngredient.from(circuit, Tier.Superconductor))
+                .inputs(CountableIngredient.from(circuit, Tier.Superconductor, 4))
                 .outputs(GATileEntities.VOID_MINER[0].getStackForm()).buildAndRegister();
+        GARecipeMaps.ASSEMBLY_LINE_RECIPES.recipeBuilder().duration(600).EUt(500000)
+                .fluidInputs(SolderingAlloy.getFluid(144 * 27))
+                .fluidInputs(Polyetheretherketone.getFluid(2500))
+                .inputs(GAMetaItems.SENSOR_UHV.getStackForm(2))
+                .inputs(GAMetaItems.ELECTRIC_MOTOR_UHV.getStackForm(8))
+                .input(wireGtSingle, UHVSuperconductor, 64)
+                .input(wireGtSingle, UHVSuperconductor, 64)
+                .input(wireGtSingle, UHVSuperconductor, 64)
+                .input(wireGtSingle, UHVSuperconductor, 64)
+                .inputs(GATileEntities.VOID_MINER[0].getStackForm())
+                .inputs(CountableIngredient.from(circuit, Tier.Infinite, 4))
+                .input(gear, Incoloy813, 4)
+                .input(screw, Incoloy813, 64)
+                .input(screw, Incoloy813, 64)
+                .input(plate, EnrichedNaquadahAlloy, 8)
+                .input(plate, Ruridit, 8)
+                .input(stick, EnrichedNaquadahAlloy, 16)
+                .outputs(GATileEntities.VOID_MINER[1].getStackForm()).buildAndRegister();
+        GARecipeMaps.ASSEMBLY_LINE_RECIPES.recipeBuilder().duration(600).EUt(2000000)
+                .fluidInputs(SolderingAlloy.getFluid(144 * 27 * 2))
+                .fluidInputs(Zylon.getFluid(2500))
+                .inputs(GAMetaItems.SENSOR_UEV.getStackForm(2))
+                .inputs(GAMetaItems.ELECTRIC_MOTOR_UEV.getStackForm(8))
+                .input(wireGtSingle, UEVSuperconductor, 64)
+                .input(wireGtSingle, UEVSuperconductor, 64)
+                .input(wireGtSingle, UEVSuperconductor, 64)
+                .input(wireGtSingle, UEVSuperconductor, 64)
+                .inputs(GATileEntities.VOID_MINER[1].getStackForm())
+                .inputs(CountableIngredient.from(circuit, UEV, 4))
+                .input(gear, HastelloyX78, 4)
+                .input(screw, Lafium, 64)
+                .input(screw, Pikyonium, 64)
+                .input(plate, HastelloyK243, 8)
+                .input(stick, TitanSteel, 16)
+                .outputs(GATileEntities.VOID_MINER[2].getStackForm()).buildAndRegister();
+        ASSEMBLY_LINE_RECIPES.recipeBuilder()
+                .fluidInputs(SolderingAlloy.getFluid(144 * 9))
+                .inputs(SENSOR_ZPM.getStackForm(2))
+                .inputs(ELECTRIC_PUMP_ZPM.getStackForm(2))
+                .inputs(ROBOT_ARM_ZPM.getStackForm(2))
+                .inputs(EMITTER_ZPM.getStackForm(2))
+                .input(plate, HSSS, 8)
+                .input(screw, NaquadahEnriched, 16)
+                .input(circuit, Tier.Ultimate, 8)
+                .input(gear, HastelloyN, 8)
+                .input(bolt, Enderium, 32)
+                .input(screw, IncoloyMA956, 32)
+                .input(plate, Nitinol60, 16)
+                .outputs(GATileEntities.BIO_REACTOR.getStackForm())
+                .EUt(122880)
+                .duration(500)
+                .buildAndRegister();
+        ASSEMBLY_LINE_RECIPES.recipeBuilder()
+                .inputs(SENSOR_LUV.getStackForm(2))
+                .inputs(CONVEYOR_MODULE_LUV.getStackForm(2))
+                .inputs(ROBOT_ARM_LUV.getStackForm(2))
+                .inputs(EMITTER_LUV.getStackForm(2))
+                .fluidInputs(SolderingAlloy.getFluid(9 * 144))
+                .input(plate, Naquadah, 16)
+                .input(gear, RhodiumPlatedPalladium, 8)
+                .input(screw, ZirconiumCarbide, 32)
+                .input(gear, Staballoy, 8)
+                .input(screw, Grisium, 32)
+                .input(circuit, Tier.Master, 4)
+                .outputs(GATileEntities.LARGE_LASER_ENGRAVER.getStackForm())
+                .EUt(30720)
+                .duration(500)
+                .buildAndRegister();
+        ASSEMBLY_LINE_RECIPES.recipeBuilder().duration(410).EUt(24000000)
+                .input(gear, Quantum, 12)
+                .input(plateDense, TitanSteel, 9)
+                .input(plate, Adamantium, 24)
+                .input(foil, FullerenePolymerMatrix, 6)
+                .inputs(SENSOR_UIV.getStackForm(4))
+                .inputs(SCINTILLATOR.getStackForm(2))
+                .inputs(LEPTON_TRAP_CRYSTAL.getStackForm(4))
+                .inputs(GAMetaBlocks.FUSION_CASING.getItemVariant(GAFusionCasing.CasingType.ADV_FUSION_COIL_3, 2))
+                .fluidInputs(Cinobite.getFluid(864))
+                .fluidInputs(SolderingAlloy.getFluid(1296))
+                .outputs(GATileEntities.COSMIC_RAY_DETECTOR.getStackForm())
+                .buildAndRegister();        
         ModHandler.addShapedRecipe("ga_large_transformer", GATileEntities.LARGE_TRANSFORMER.getStackForm(), "PPP", "IHO", "PPP", 'H', MetaTileEntities.HULL[GTValues.LV].getStackForm(), 'P', new UnificationEntry(plate, Aluminium), 'I', GATileEntities.ENERGY_INPUT_HATCH_4_AMPS.get(GTValues.MV).getStackForm(), 'O', GATileEntities.ENERGY_OUTPUT_HATCH_16_AMPS.get(GTValues.MV).getStackForm());
         ASSEMBLY_LINE_RECIPES.recipeBuilder().duration(1000).EUt(90000)
                 .inputs(
@@ -355,7 +458,7 @@ public class MachineCraftingRecipes {
                         OreDictUnifier.get(plateDense, Naquadria, 4),
                         FIELD_GENERATOR_UV.getStackForm(2),
                         HIGH_POWER_INTEGRATED_CIRCUIT.getStackForm(64),
-                        OreDictUnifier.get(wireGtHex, Tier.Superconductor, 32))
+                        OreDictUnifier.get(wireGtHex, UVSuperconductor, 32))
                 .inputs(CountableIngredient.from(circuit, Tier.Infinite))
                 .inputs(CountableIngredient.from(circuit, Tier.Infinite))
                 .inputs(CountableIngredient.from(circuit, Tier.Infinite))
@@ -403,9 +506,157 @@ public class MachineCraftingRecipes {
                 .fluidInputs(SolderingAlloy.getFluid(2880))
                 .outputs(GATileEntities.FUSION_REACTOR[2].getStackForm()).buildAndRegister();
 
-        RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().duration(3000).EUt(480).fluidInputs(SolderingAlloy.getFluid(GTValues.L * 10)).inputs(ELECTRIC_PUMP_HV.getStackForm(2), MetaTileEntities.PUMP[2].getStackForm()).input(circuit, Tier.Advanced, 2).input(GAEnums.GAOrePrefix.gtMetalCasing, StainlessSteel, 5).outputs(GATileEntities.DRILLING_RIG.getStackForm()).buildAndRegister();
-        ModHandler.addShapedRecipe("ga_solar_sampler", GATileEntities.SOLAR_FLUID_SAMPLER.getStackForm(), "GGG", "PCP", "EDE", 'G', new ItemStack(Blocks.GLASS, 1), 'P', new UnificationEntry(plate, StainlessSteel), 'C', MetaTileEntities.HULL[GTValues.HV].getStackForm(), 'D', DRILL_HV.getStackForm(StainlessSteel), 'E', new UnificationEntry(cableGtSingle, Gold));
+        ASSEMBLY_LINE_RECIPES.recipeBuilder().duration(500).EUt(500000)
+                .fluidInputs(SolderingAlloy.getFluid(144 * 9))
+                .input(plate, Tritanium, 8)
+                .input(plate, Naquadria, 32)
+                .input(screw, Naquadria, 64)
+                .input(screw, Dubnium, 64)
+                .input(foil, Polyetheretherketone, 64)
+                .inputs(GATileEntities.LARGE_NAQUADAH_REACTOR.getStackForm())
+                .inputs(UHPIC.getStackForm(16))
+                .inputs(ELECTRIC_PUMP_UV.getStackForm(4))
+                .inputs(FIELD_GENERATOR_UV.getStackForm(4))
+                .input(circuit, Tier.Superconductor, 4)
+                .outputs(GATileEntities.HYPER_REACTOR.getStackForm())
+                .buildAndRegister();
+        ASSEMBLY_LINE_RECIPES.recipeBuilder().duration(500).EUt(2000000)
+                .fluidInputs(SolderingAlloy.getFluid(144 * 9 * 4))
+                .input(plate, Incoloy813, 32)
+                .input(plate, EnrichedNaquadahAlloy, 32)
+                .input(screw, Ruridit, 64)
+                .input(stick, AbyssalAlloy, 16)
+                .input(gear, TungstenTitaniumCarbide, 8)
+                .input(circuit, Tier.Infinite, 4)
+                .input(foil, Zylon, 64)
+                .inputs(FIELD_GENERATOR_UHV.getStackForm(2))
+                .inputs(ELECTRIC_PUMP_UHV.getStackForm(2))
+                .inputs(GATileEntities.HYPER_REACTOR.getStackForm())
+                .outputs(GATileEntities.HYPER_REACTOR_UHV.getStackForm())
+                .buildAndRegister();
+        ASSEMBLY_LINE_RECIPES.recipeBuilder().duration(500).EUt(8000000)
+                .fluidInputs(SolderingAlloy.getFluid(144 * 9 * 16))
+                .input(plate, HastelloyX78, 32)
+                .input(plate, HastelloyK243, 32)
+                .input(screw, Zeron100, 64)
+                .input(stick, TitanSteel, 16)
+                .input(gear, Pikyonium, 8)
+                .input(circuit, UEV, 4)
+                .inputs(DEGENERATE_RHENIUM_PLATE.getStackForm(4))
+                .input(foil, Zylon, 64)
+                .input(foil, Zylon, 64)
+                .inputs(FIELD_GENERATOR_UEV.getStackForm(2))
+                .inputs(ELECTRIC_PUMP_UEV.getStackForm(2))
+                .inputs(GATileEntities.HYPER_REACTOR_UHV.getStackForm())
+                .outputs(GATileEntities.HYPER_REACTOR_UEV.getStackForm())
+                .buildAndRegister();
+        ASSEMBLY_LINE_RECIPES.recipeBuilder().duration(500).EUt(2000000)
+                .fluidInputs(SolderingAlloy.getFluid(144 * 9 * 16))
+                .input(plate, Trinium, 32)
+                .input(stick, HDCS, 16)
+                .input(gear, TungstenTitaniumCarbide, 16)
+                .input(screw, Incoloy813,32)
+                .input(bolt, EnrichedNaquadahAlloy, 64)
+                .input(circuit, Tier.Superconductor, 4)
+                .inputs(SENSOR_UHV.getStackForm(4))
+                .inputs(EMITTER_UHV.getStackForm(4))
+                .inputs(FIELD_GENERATOR_UHV.getStackForm(2))
+                .outputs(GATileEntities.STELLAR_FORGE.getStackForm())
+                .buildAndRegister();
+        ASSEMBLY_LINE_RECIPES.recipeBuilder().duration(250).EUt(2000000)
+                .fluidInputs(SolderingAlloy.getFluid(1440))
+                .inputs(SENSOR_UHV.getStackForm())
+                .inputs(ELECTRIC_MOTOR_UHV.getStackForm(2))
+                .inputs(ELECTRIC_PUMP_UHV.getStackForm(2))
+                .input(plate, Trinium, 8)
+                .input(gear, TungstenTitaniumCarbide, 4)
+                .input(screw, TungstenTitaniumCarbide, 16)
+                .input(circuit, Tier.Superconductor, 2)
+                .outputs(GATileEntities.PLASMA_CONDENSER.getStackForm())
+                .buildAndRegister();
+        RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().duration(150).EUt(500000)
+                .input(frameGt, Trinium)
+                .input(plate, HDCS, 6)
+                .input(stick, EnrichedNaquadahAlloy, 4)
+                .input(screw, Trinium, 8)
+                .fluidInputs(SolderingAlloy.getFluid(144 * 4))
+                .outputs(GAMetaBlocks.MUTLIBLOCK_CASING2.getItemVariant(GAMultiblockCasing2.CasingType.STELLAR_CONTAINMENT, 4))
+                .buildAndRegister();
+        RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().duration(150).EUt(500000)
+                .input(frameGt, Naquadria)
+                .input(screw, EnrichedNaquadahAlloy, 16)
+                .input(plate, Incoloy813, 8)
+                .fluidInputs(SolderingAlloy.getFluid(144 * 4))
+                .outputs(GAMetaBlocks.REACTOR_CASING.getItemVariant(GAReactorCasing.CasingType.HYPER_CASING, 4))
+                .buildAndRegister();
+        RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().duration(150).EUt(2000000)
+                .inputs(GAMetaBlocks.REACTOR_CASING.getItemVariant(GAReactorCasing.CasingType.HYPER_CASING))
+                .input(screw, Pikyonium, 16)
+                .input(plate, TitanSteel, 8)
+                .fluidInputs(SolderingAlloy.getFluid(144 * 4))
+                .outputs(GAMetaBlocks.REACTOR_CASING.getItemVariant(GAReactorCasing.CasingType.HYPER_CASING_2, 4))
+                .buildAndRegister();
+        RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().duration(150).EUt(500000)
+                .inputs(FIELD_GENERATOR_UV.getStackForm(2))
+                .inputs(SENSOR_UV.getStackForm())
+                .inputs(EMITTER_UV.getStackForm())
+                .input(frameGt, Naquadria, 4)
+                .input(screw, Dubnium, 16)
+                .input(plate, Naquadria, 4)
+                .input(circuit, Tier.Superconductor)
+                .outputs(GAMetaBlocks.REACTOR_CASING.getItemVariant(GAReactorCasing.CasingType.HYPER_CORE, 4))
+                .buildAndRegister();
+        RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().duration(150).EUt(2000000)
+                .inputs(FIELD_GENERATOR_UHV.getStackForm(2))
+                .inputs(SENSOR_UHV.getStackForm())
+                .inputs(EMITTER_UHV.getStackForm())
+                .inputs(GAMetaBlocks.REACTOR_CASING.getItemVariant(GAReactorCasing.CasingType.HYPER_CASING, 2))
+                .input(screw, Rutherfordium, 16)
+                .input(plate, TungstenTitaniumCarbide, 4)
+                .input(circuit, Tier.Infinite)
+                .outputs(GAMetaBlocks.REACTOR_CASING.getItemVariant(GAReactorCasing.CasingType.HYPER_CORE_2, 4))
+                .buildAndRegister();
+        RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().duration(150).EUt(8000000)
+                .inputs(FIELD_GENERATOR_UEV.getStackForm(2))
+                .inputs(SENSOR_UEV.getStackForm())
+                .inputs(EMITTER_UEV.getStackForm())
+                .inputs(GAMetaBlocks.REACTOR_CASING.getItemVariant(GAReactorCasing.CasingType.HYPER_CASING_2, 2))
+                .input(screw, TriniumTitanium, 16)
+                .input(plate, TitanSteel, 4)
+                .input(circuit, UEV)
+                .outputs(GAMetaBlocks.REACTOR_CASING.getItemVariant(GAReactorCasing.CasingType.HYPER_CORE_3, 4))
+                .buildAndRegister();
+        RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().duration(150).EUt(120000)
+                .input(frameGt, HSSS)
+                .input(plate, NaquadahAlloy, 4)
+                .input(screw, Dubnium, 4)
+                .fluidInputs(SolderingAlloy.getFluid(144))
+                .outputs(GAMetaBlocks.MUTLIBLOCK_CASING2.getItemVariant(GAMultiblockCasing2.CasingType.BIO_REACTOR, 2))
+                .buildAndRegister();
 
+        RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().duration(3000).EUt(480).fluidInputs(SolderingAlloy.getFluid(GTValues.L * 10)).inputs(ELECTRIC_PUMP_HV.getStackForm(2), MetaTileEntities.PUMP[2].getStackForm()).input(circuit, Tier.Advanced, 2).input(GAEnums.GAOrePrefix.gtMetalCasing, StainlessSteel, 5).outputs(GATileEntities.DRILLING_RIG.getStackForm()).buildAndRegister();
+        ModHandler.addShapedRecipe("ga_solar_sampler", GATileEntities.SOLAR_FLUID_SAMPLER.getStackForm(), "GGG", "PCP", "EDE", 'G', new ItemStack(Blocks.GLASS, 1), 'P', new UnificationEntry(plate, StainlessSteel), 'C', MetaTileEntities.HULL[GTValues.HV].getStackForm(), 'D', new UnificationEntry(toolHeadDrill, StainlessSteel), 'E', new UnificationEntry(cableGtSingle, Gold));
+
+        RecipeMaps.ASSEMBLER_RECIPES.recipeBuilder().duration(120).EUt(6000000).fluidInputs(SolderingAlloy.getFluid(GTValues.L * 10)).inputs(FIELD_GENERATOR_UEV.getStackForm(2), ROBOT_ARM_UEV.getStackForm()).input(circuit, UEV, 7).input(frameGt, Bohrium, 5).outputs(GAMetaBlocks.QUANTUM_CASING.getItemVariant(GAQuantumCasing.CasingType.COMPUTER, 3)).buildAndRegister();
+        ASSEMBLY_LINE_RECIPES.recipeBuilder().duration(1000).EUt(8000000)
+                .input(frameGt, Bohrium, 16)
+                .input(plate, Bohrium, 16)
+                .input(gearSmall, Bohrium, 16)
+                .input(GAEnums.GAOrePrefix.round, Bohrium, 16)
+                .inputs(GAMetaBlocks.QUANTUM_CASING.getItemVariant(GAQuantumCasing.CasingType.COMPUTER, 4))
+                .inputs(GAMetaBlocks.QUANTUM_CASING.getItemVariant(GAQuantumCasing.CasingType.COMPUTER, 4))
+                .inputs(GAMetaBlocks.QUANTUM_CASING.getItemVariant(GAQuantumCasing.CasingType.COMPUTER, 4))
+                .inputs(GAMetaBlocks.QUANTUM_CASING.getItemVariant(GAQuantumCasing.CasingType.COMPUTER, 4))
+                .inputs(ROBOT_ARM_UEV.getStackForm(2))
+                .inputs(FIELD_GENERATOR_UEV.getStackForm(2))
+                .input(wireGtHex, BlackTitanium, 16)
+                .input(circuit, UEV)
+                .input(circuit, UEV)
+                .input(circuit, UEV)
+                .input(circuit, UEV)
+                .fluidInputs(SolderingAlloy.getFluid(L * 20))
+                .fluidInputs(Zylon.getFluid(L * 20))
+                .outputs(GATileEntities.QUBIT_COMPUTER.getStackForm()).buildAndRegister();
 
         List<Recipe> removals = new ArrayList<>();
 
@@ -554,7 +805,7 @@ public class MachineCraftingRecipes {
         if (GAConfig.GT5U.highTierElectrolyzers)
             registerMachineRecipe(GATileEntities.ELECTROLYZER, "IGI", "IMI", "CWC", 'M', HULL, 'C', CIRCUIT, 'W', CABLE_SINGLE, 'I', WIRE, 'G', GLASS);
         if (GAConfig.GT5U.highTierThermalCentrifuges)
-            registerMachineRecipe(THERMAL_CENTRIFUGE, "CEC", "OMO", "WEW", 'M', HULL, 'E', MOTOR, 'C', CIRCUIT, 'W', CABLE_SINGLE, 'O', COIL_HEATING_DOUBLE);
+            registerMachineRecipe(GATileEntities.THERMAL_CENTRIFUGE, "CEC", "OMO", "WEW", 'M', HULL, 'E', MOTOR, 'C', CIRCUIT, 'W', CABLE_SINGLE, 'O', COIL_HEATING_DOUBLE);
         if (GAConfig.GT5U.highTierOreWashers)
             registerMachineRecipe(GATileEntities.ORE_WASHER, "RGR", "CEC", "WMW", 'M', HULL, 'R', ROTOR, 'E', MOTOR, 'C', CIRCUIT, 'W', CABLE_SINGLE, 'G', GLASS);
         if (GAConfig.GT5U.highTierPackers)
@@ -659,6 +910,11 @@ public class MachineCraftingRecipes {
             int tier = energyOutputHatch.getTier();
             ModHandler.addShapedRecipe(String.format("ga_%s", energyOutputHatch.getMetaName()), energyOutputHatch.getStackForm(), " MC", 'M', HULL.getIngredient(tier), 'C', CABLE_HEX.getIngredient(tier));
         });
+
+        ModHandler.addShapedRecipe("ga_steam_grinder", GATileEntities.STEAM_GRINDER.getStackForm(), "CGC", "CFC", "CGC", 'G', new UnificationEntry(gear, Potin), 'F', new UnificationEntry(frameGt, Potin), 'C', MetaBlocks.METAL_CASING.getItemVariant(BlockMetalCasing.MetalCasingType.BRONZE_BRICKS));
+        ModHandler.addShapedRecipe("ga_steam_hatch", GATileEntities.STEAM_HATCH.getStackForm(), "BPB", "BTB", "BPB", 'B', new UnificationEntry(plate, Bronze), 'P', new UnificationEntry(pipeMedium, Bronze), 'T', MetaTileEntities.BRONZE_TANK.getStackForm());
+        ModHandler.addShapedRecipe("ga_steam_input_bus", GATileEntities.STEAM_INPUT_BUS.getStackForm(), "BMB", "THT", "BMB", 'B', new UnificationEntry(plate, Bronze), 'M', new UnificationEntry(plate, Potin), 'T', new UnificationEntry(plate, Tin), 'H', Blocks.CHEST);
+        ModHandler.addShapedRecipe("ga_steam_output_bus", GATileEntities.STEAM_OUTPUT_BUS.getStackForm(), "BTB", "MHM", "BTB", 'B', new UnificationEntry(plate, Bronze), 'M', new UnificationEntry(plate, Potin), 'T', new UnificationEntry(plate, Tin), 'H', Blocks.CHEST);
 
     }
 

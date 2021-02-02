@@ -31,6 +31,9 @@ import gregicadditions.machines.multi.nuclear.MetaTileEntityNuclearReactor;
 import gregicadditions.machines.multi.override.*;
 import gregicadditions.machines.multi.qubit.MetaTileEntityQubitComputer;
 import gregicadditions.machines.multi.simple.*;
+import gregicadditions.machines.multi.steam.MetaTileEntitySteamGrinder;
+import gregicadditions.machines.multi.multiblockpart.MetaTileEntitySteamHatch;
+import gregicadditions.machines.multi.multiblockpart.MetaTileEntitySteamItemBus;
 import gregicadditions.machines.overrides.*;
 import gregicadditions.recipes.GARecipeMaps;
 import gregtech.api.GTValues;
@@ -146,6 +149,9 @@ public class GATileEntities {
     public static MetaTileEntityQubitComputer QUBIT_COMPUTER;
     public static MetaTileEntityDrillingRig DRILLING_RIG;
     public static MetaTileEntitySolarSampler SOLAR_FLUID_SAMPLER;
+    public static MetaTileEntityBioReactor BIO_REACTOR;
+    public static TileEntityLargePackager LARGE_PACKAGER;
+    public static MetaTileEntityCosmicRayDetector COSMIC_RAY_DETECTOR;
     //Nuclear
     public static MetaTileEntityNuclearReactor NUCLEAR_REACTOR;
     public static MetaTileEntityNuclearReactor NUCLEAR_BREEDER;
@@ -154,6 +160,12 @@ public class GATileEntities {
 
     //multiblock
     public static List<MetaTileEntityOutputFilteredHatch> OUTPUT_HATCH_FILTERED = new ArrayList<>();
+
+    // Steam Grinder
+    public static MetaTileEntitySteamHatch STEAM_HATCH;
+    public static MetaTileEntitySteamItemBus STEAM_INPUT_BUS;
+    public static MetaTileEntitySteamItemBus STEAM_OUTPUT_BUS;
+    public static MetaTileEntitySteamGrinder STEAM_GRINDER;
 
     //override from GTCE
     public static List<GAMetaTileEntityEnergyHatch> ENERGY_INPUT_HATCH_4_AMPS = new ArrayList<>();
@@ -213,6 +225,8 @@ public class GATileEntities {
 
     public static GAMetaTileEntityEnergyHatch[] ENERGY_INPUT = new GAMetaTileEntityEnergyHatch[5];
     public static GAMetaTileEntityEnergyHatch[] ENERGY_OUTPUT = new GAMetaTileEntityEnergyHatch[5];
+
+    public static MetaTileEntityPlasmaCondenser PLASMA_CONDENSER;
 
     public static void init() {
 
@@ -285,8 +299,9 @@ public class GATileEntities {
             ARC_FURNACE[7] = create(2035, new SimpleMachineMetaTileEntity(location("arc_furnace.uv"), RecipeMaps.ARC_FURNACE_RECIPES, Textures.ARC_FURNACE_OVERLAY, 8));
             ARC_FURNACE[8] = create(3264, new GASimpleMachineMetaTileEntity(location("arc_furnace.uhv"), RecipeMaps.ARC_FURNACE_RECIPES, Textures.ARC_FURNACE_OVERLAY, 9));
             ARC_FURNACE[9] = create(3265, new GASimpleMachineMetaTileEntity(location("arc_furnace.uev"), RecipeMaps.ARC_FURNACE_RECIPES, Textures.ARC_FURNACE_OVERLAY, 10));
-            ARC_FURNACE[10] = create(3266, new GASimpleMachineMetaTileEntity(location("arc_furnace.uiv"), RecipeMaps.ARC_FURNACE_RECIPES, Textures.ARC_FURNACE_OVERLAY, 12));
-            ARC_FURNACE[11] = create(3268, new GASimpleMachineMetaTileEntity(location("arc_furnace.uxv"), RecipeMaps.ARC_FURNACE_RECIPES, Textures.ARC_FURNACE_OVERLAY, 13));
+            ARC_FURNACE[10] = create(3266, new GASimpleMachineMetaTileEntity(location("arc_furnace.uiv"), RecipeMaps.ARC_FURNACE_RECIPES, Textures.ARC_FURNACE_OVERLAY, 11));
+            ARC_FURNACE[11] = create(3267, new GASimpleMachineMetaTileEntity(location("arc_furnace.umv"), RecipeMaps.ARC_FURNACE_RECIPES, Textures.ARC_FURNACE_OVERLAY, 12));
+            ARC_FURNACE[12] = create(3268, new GASimpleMachineMetaTileEntity(location("arc_furnace.uxv"), RecipeMaps.ARC_FURNACE_RECIPES, Textures.ARC_FURNACE_OVERLAY, 13));
         }
 
         if (GAConfig.GT5U.highTierAssemblers) {
@@ -1004,7 +1019,7 @@ public class GATileEntities {
 
         id = 3220;
         for (int i = 0; i < GTValues.V.length; i++) {
-            OUTPUT_HATCH_FILTERED.add(GregTechAPI.registerMetaTileEntity(id++, new MetaTileEntityOutputFilteredHatch(location("fluid_hatch.export_filtered." + GTValues.VN[i].toLowerCase()), i)));
+            OUTPUT_HATCH_FILTERED.add(GregTechAPI.registerMetaTileEntity(id++, new MetaTileEntityOutputFilteredHatch(location("fluid_hatch.export_filtered." + GTValues.VN[i].toLowerCase()), i == 9 ? GAValues.MAX : i)));
         }
 
         BUFFER[0] = GregTechAPI.registerMetaTileEntity(3230, new TileEntityBuffer(location("buffer.lv"), 3));
@@ -1107,7 +1122,17 @@ public class GATileEntities {
             }
             CHARGER[i] = GregTechAPI.registerMetaTileEntity(id++, new GAMetaTileEntityCharger(location("charger." + GAValues.VN[i + 9].toLowerCase()), i + 9, 4));
         }
-        //4160
+        BIO_REACTOR = GregTechAPI.registerMetaTileEntity(4170, new MetaTileEntityBioReactor(location("bio_reactor")));
+        PLASMA_CONDENSER = GregTechAPI.registerMetaTileEntity(4171, new MetaTileEntityPlasmaCondenser(location("plasma_condenser")));
+        LARGE_PACKAGER = GregTechAPI.registerMetaTileEntity(4172, new TileEntityLargePackager(location("large_packager"), RecipeMaps.PACKER_RECIPES));
+        GregTechAPI.registerMetaTileEntity(4173, new TileEntityLargePackager(location("large_packager"), RecipeMaps.UNPACKER_RECIPES));
+        COSMIC_RAY_DETECTOR = GregTechAPI.registerMetaTileEntity(4174, new MetaTileEntityCosmicRayDetector(location("cosmic_ray_detector")));
+
+        STEAM_HATCH = GregTechAPI.registerMetaTileEntity(4175, new MetaTileEntitySteamHatch(location("steam_hatch")));
+        STEAM_INPUT_BUS = GregTechAPI.registerMetaTileEntity(4176, new MetaTileEntitySteamItemBus(location("steam_input_bus"), false));
+        STEAM_OUTPUT_BUS = GregTechAPI.registerMetaTileEntity(4177, new MetaTileEntitySteamItemBus(location("steam_output_bus"), true));
+        STEAM_GRINDER = GregTechAPI.registerMetaTileEntity(4178, new MetaTileEntitySteamGrinder(location("steam_grinder")));
+        
     }
 
     public static <T extends MetaTileEntity & ITieredMetaTileEntity> MTE<T> create(int id, T sampleMetaTileEntity) {

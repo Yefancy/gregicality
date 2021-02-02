@@ -2,7 +2,7 @@ package gregicadditions.item;
 
 import gregicadditions.GAConfig;
 import gregicadditions.GAEnums;
-import gregicadditions.item.behavior.*;
+import gregicadditions.item.behaviors.*;
 import gregtech.api.items.materialitem.MaterialMetaItem;
 import gregtech.api.items.metaitem.ElectricStats;
 import gregtech.api.items.metaitem.FluidStats;
@@ -173,8 +173,8 @@ public class GAMetaItem extends MaterialMetaItem {
         NUCLEAR_WASTE_REACTIVE_NONMETAL = addItem(332, "waste.nuclear").addComponents(new WasteBehavior("waste.nuclear.nonmetal", 0xD1CB4F));
 
 
-        WAFER_AMERICIUM = addItem(333, "wafer.americium");
-        WAFER_EUROPIUM = addItem(334, "wafer.europium");
+        WAFER_DUBNIUM = addItem(333, "wafer.dubnium");
+        WAFER_RUTHERFORDIUM = addItem(334, "wafer.rutherfordium");
         WAFER_NEUTRONIUM = addItem(335, "wafer.neutronium");
 
         COSMIC_PROCESSOR = addItem(336, "circuit.processor.cosmic").setUnificationData(OrePrefix.circuit, MarkerMaterials.Tier.Infinite);
@@ -182,8 +182,8 @@ public class GAMetaItem extends MaterialMetaItem {
         COSMIC_COMPUTER = addItem(338, "circuit.computer.cosmic").setUnificationData(OrePrefix.circuit, UIV);
         COSMIC_MAINFRAME = addItem(339, "circuit.mainframe.cosmic").setUnificationData(OrePrefix.circuit, UMV);
 
-        BOULE_AMERICIUM = addItem(340, "boule.americium");
-        BOULE_EUROPIUM = addItem(341, "boule.europium");
+        BOULE_DUBNIUM = addItem(340, "boule.dubnium");
+        BOULE_RUTHERFORDIUM = addItem(341, "boule.rutherfordium");
         BOULE_NEUTRONIUM = addItem(342, "boule.neutronium");
 
         UNSTABLE_STAR = addItem(343, "unstable.star");
@@ -291,8 +291,9 @@ public class GAMetaItem extends MaterialMetaItem {
         PLASMA_CONTAINMENT_CELL = addItem(428, "plasma.containment.cell");
         RHENIUM_PLASMA_CONTAINMENT_CELL = addItem(429, "rhenium.plasma.containment.cell");
         DEGENERATE_RHENIUM_PLATE = addItem(430, "degenerate.rhenium.plate");
-        DEGENERATE_RHENIUM_PLATE = addItem(432, "degenerate.rhenium.dust");
+        DEGENERATE_RHENIUM_DUST = addItem(432, "degenerate.rhenium.dust");
         PLATE_FIELD_SHAPE = addItem(431, "plate.field.shape");
+        DUST_FIELD_SHAPE = addItem(439, "dust.field.shape");
 
         ZBLAN = addItem(433, "zblan");
         ZBLAN_INGOT = addItem(434, "zblan_ingot");
@@ -300,6 +301,138 @@ public class GAMetaItem extends MaterialMetaItem {
         ZBLAN_FIBER = addItem(436, "zblan_fiber");
         ERBIUM_DOPED_ZBLAN = addItem(437, "erbium_doped_zblan");
         CLADDED_OPTICAL_FIBER_CORE = addItem(438, "cladded_optical_fiber_core");
+
+        RAPIDLY_ROTATING_CRUCIBLE = addItem(440, "rapidly_rotating_crucible");
+        HEAVY_METAL_ABSORBING_YARN = addItem(441, "heavy_metal_absorbing_yarn");
+        URANIUM_SATURATED_YARN = addItem(442, "uranium_saturated_yarn");
+        BORON_RETAINING_YARN = addItem(443, "boron_retaining_yarn");
+        BORON_SATURATED_YARN = addItem(444, "boron_saturated_yarn");
+        LITHIUM_SIEVE = addItem(445, "lithium_sieve");
+        LITHIUM_SATURATED_LITHIUM_SIEVE = addItem(446, "lithium_saturated_lithium_sieve");
+        NANOTOME = addItem(447, "nanotome");
+        ACRYLIC_YARN = addItem(448, "acrylic_yarn");
+        NEUTRON_PLASMA_CONTAINMENT_CELL = addItem(449, "neutron.plasma.containment.cell");
+        INGOT_FIELD_SHAPE = addItem(450, "ingot.field.shape");
+        WELL_PIPE = addItem(451,"well_pipe");
+        WELL_CONNECTOR_PIECE = addItem(452,"well_connector_pipe");
+        RIG_DRILL = addItem(453,"rig_drill");
+        MEMORY_FOAM_BLOCK = addItem(454,"memory_foam_block");
+        LASER_DIODE = addItem(455,"laser_diode");
+        LASER_COOLING_UNIT = addItem(456,"laser_cooling_unit");
+        MAGNETIC_TRAP = addItem(457,"magnetic_trap");
+        EMPTY_LASER_COOLING_CONTAINER = addItem(458,"empty_laser_cooling_container");
+        BOSE_EINSTEIN_COOLING_CONTAINER = addItem(459,"bose_einstein_cooling_container");
+        
+        ALUMINO_SILICATE_GLASS_TUBE = addItem(460,"alumino_silicate_glass_tube");
+        INDUCTOR = addItem(461,"inductor");
+        BALLAST = addItem(462,"ballast");
+        UVA_HALIDE_LAMP = addItem(463,"uva_halide_lamp");
+        WHITE_HALIDE_LAMP = addItem(464,"white_halide_lamp");
+        RED_HALIDE_LAMP = addItem(465,"red_halide_lamp");
+        BLUE_HALIDE_LAMP = addItem(466,"blue_halide_lamp");
+        GREEN_HALIDE_LAMP = addItem(467,"green_halide_lamp");
+        UVA_LAMP_CORE = addItem(468,"uva_lamp_core");
+        WHITE_LAMP_CORE = addItem(469,"white_lamp_core");
+        RED_LAMP_CORE = addItem(470,"red_lamp_core");
+        BLUE_LAMP_CORE = addItem(471,"blue_lamp_core");
+        GREEN_LAMP_CORE = addItem(472,"green_lamp_core");
+        ACTINIUM_PLASMA_CONTAINMENT_CELL = addItem(473, "actinium.plasma.containment.cell");
+
+        SHEWANELLA_CULTURE = addItem(475, "shewanella.culture");
+        STREPTOCOCCUS_CULTURE = addItem(476, "streptococcus.culture");
+        ESCHERICHIA_CULTURE = addItem(477, "eschericia.culture");
+        BIFIDOBACTERIUM_CULTURE = addItem(478, "bifidobacterium.culture");
+        BREVIBACTERIUM_CULTURE = addItem(479, "brevibacterium.culture");
+        
+        NDYAG_BOULE = addItem(480,"ndyag_boule");
+        PRHOYLF_BOULE = addItem(481,"prhoylf_boule");
+        LUTMYVO_BOULE = addItem(482,"lutmyvo_boule");
+        NDYAG_ROD = addItem(483,"ndyag_rod");
+        PRHOYLF_ROD = addItem(484,"prhoylf_rod");
+        LUTMYVO_ROD = addItem(485,"lutmyvo_rod");
+        LOW_FREQUENCY_LASER = addItem(486,"low_frequency_laser");
+        MEDIUM_FREQUENCY_LASER = addItem(487,"medium_frequency_laser");
+        HIGH_FREQUENCY_LASER = addItem(488,"high_frequency_laser");
+        PERIODICALLY_POLED_LITHIUM_NIOBATE_BOULE = addItem(489,"periodically_poled_lithium_niobate_boule");
+        HIGHLY_REFLECTIVE_MIRROR = addItem(490,"highly_reflective_mirror");
+        NON_LINEAR_OPTICAL_LENS = addItem(491,"non_linear_optical_lens");
+        ROTATING_TRANSPARENT_SURFACE = addItem(492,"rotating_transparent_surface");
+        ELECTRON_SOURCE = addItem(493,"electron_source");
+
+        SMD_CAPACITOR_OPTICAL = addItem(494,"smd_capacitor_optical");
+        SMD_DIODE_OPTICAL = addItem(495,"smd_diode_optical");
+        SMD_RESISTOR_OPTICAL = addItem(496,"smd_resistor_optical");
+        SMD_TRANSISTOR_OPTICAL = addItem(497,"smd_transistor_optical");
+        OPTICAL_SOC_WAFER = addItem(498,"optical_soc_wafer");
+        OPTICAL_SOC = addItem(499,"optical_soc");
+        OPTICAL_PROCESSING_CORE = addItem(500,"optical_processing_core");
+        OPTICAL_PROCESSOR = addItem(501,"circuit.processor.optical").setUnificationData(OrePrefix.circuit, MarkerMaterials.Tier.Superconductor);
+        OPTICAL_ASSEMBLY = addItem(502,"circuit.assembly.optical").setUnificationData(OrePrefix.circuit, MarkerMaterials.Tier.Infinite);
+        OPTICAL_COMPUTER = addItem(503,"circuit.computer.optical").setUnificationData(OrePrefix.circuit, UEV);
+        OPTICAL_MAINFRAME = addItem(504,"circuit.mainframe.optical").setUnificationData(OrePrefix.circuit, UIV);
+
+        PEEK_POLYAMIDE_FOIL = addItem(505,"peek_polyamide_foil");
+        HIGHLY_INSULATING_FOIL = addItem(506,"highly_insulating_foil");
+        INSULATION_WIRE_ASSEMBLY = addItem(507,"insulation_wire_assembly");
+
+        NEUTRONIUM_SPHERE = addItem(508, "neutronium.sphere");
+        TRIPLET_NEUTRONIUM_SPHERE = addItem(509, "triplet.neutronium.sphere");
+        CHARGED_TRIPLET_NEUTRONIUM_SPHERE = addItem(510, "charged.triplet.neutronium.sphere");
+        CONTAINED_REISSNER_NORDSTROM_SINGULARITY = addItem(511, "contained.reissner.nordstrom.singularity");
+        CONTAINED_KERR_NEWMANN_SINGULARITY = addItem(512, "contained.kerr.newmann.singularity");
+        CONTAINED_KERR_SINGULARITY = addItem(513, "contained.kerr.singularity");
+        CONTAINED_HIGH_DENSITY_PROTONIC_MATTER = addItem(514, "contained.high.density.protonic.matter");
+        TIME_DILATION_CONTAINMENT_UNIT = addItem(515, "time.dilation.containment.unit");
+        MICROWORMHOLE_GENERATOR = addItem(516, "microwormhole.generator");
+        MACROWORMHOLE_GENERATOR = addItem(517, "macrowormhole.generator");
+        STABILIZED_WORMHOLE_GENERATOR = addItem(518, "stabilized.wormhole.generator");
+        CONTAINED_EXOTIC_MATTER = addItem(519, "contained.exotic.matter");
+        SEPARATION_ELECTROMAGNET = addItem(521, "separation.electromagnet");
+        SPHERE_FIELD_SHAPE = addItem(522, "sphere.field.shape");
+
+        AEROGRAPHENE = addItem(523,"aerographene");
+        SCINTILLATOR_CRYSTAL = addItem(524,"scintillator_crystal");
+        SCINTILLATOR = addItem(525,"scintillator");
+        LEPTON_TRAP_CRYSTAL =  addItem(526,"lepton_trap_crystal");
+        HASSIUM_SEED_CRYSTAL = addItem(527, "hassium_seed_crystal");
+        HASSIUM_BOULE = addItem(520,"hassium_boule");
+        HASSIUM_WAFER = addItem(528,"hassium_wafer");
+        COATED_HASSIUM_WAFER = addItem(529, "coated_hassium_wafer");
+        PHOTOCOATED_HASSIUM_WAFER = addItem(530,"photocoated_hassium_wafer");
+        GRATING_LITHOGRAPHY_MASK = addItem(531, "grating_lithography_mask");
+        DIFFRACTOR_GRATING_MIRROR = addItem(532,"diffractor_grating_mirror");
+        ULTRASHORT_PULSE_LASER = addItem(533,"ultrashort_pulse_laser");
+        SMD_CAPACITOR_COSMIC = addItem(534,"smd_capacitor_cosmic");
+        SMD_DIODE_COSMIC = addItem(535,"smd_diode_cosmic");
+        SMD_RESISTOR_COSMIC = addItem(536,"smd_resistor_cosmic");
+        SMD_TRANSISTOR_COSMIC = addItem(537,"smd_transistor_cosmic");
+        COSMIC_PROCESSING_UNIT_CORE = addItem(538,"cosmic_processing_unit_core");
+        COSMIC_PROCESSING_CORE = addItem(539,"cosmic_processing_core");
+        GRAPHENE_IRON_PLATE = addItem(540,"graphene_iron_plate");
+        CUPRIVADUS_CULTURE = addItem(541, "cupriavidus.culture");
+
+        SMD_CAPACITOR_SUPRACAUSAL = addItem(542, "smd.capacitor.supracausal");
+        SMD_RESISTOR_SUPRACAUSAL = addItem(543, "smd.resistor.supracausal");
+        SMD_DIODE_SUPRACAUSAL = addItem(544, "smd.diode.supracausal");
+        SMD_TRANSISTOR_SUPRACAUSAL = addItem(545, "smd.transistor.supracausal");
+
+        SUPRACAUSAL_PROCESSOR = addItem(546, "circuit.processor.supracausal").setUnificationData(OrePrefix.circuit, UEV);
+        SUPRACAUSAL_ASSEMBLY = addItem(547, "circuit.assembly.supracausal").setUnificationData(OrePrefix.circuit, UIV);
+        SUPRACAUSAL_COMPUTER = addItem(548, "circuit.computer.supracausal").setUnificationData(OrePrefix.circuit, UMV);
+        SUPRACAUSAL_MAINFRAME = addItem(549, "circuit.mainframe.supracausal").setUnificationData(OrePrefix.circuit, UXV);
+
+        TOPOLOGICAL_MANIPULATOR_UNIT = addItem(550, "topological.manipulator.unit");
+        RELATIVISTIC_SPINORIAL_MEMORY_SYSTEM = addItem(551, "relativistic.spinorial.memory.system");
+        GRAVITON_TRANSDUCER = addItem(552, "graviton.transducer");
+        NUCLEAR_CLOCK = addItem(553, "nuclear.clock");
+        SUPRACAUSAL_PROCESSING_CORE = addItem(554, "supracausal.processing.core");
+        MANIFOLD_OSCILLATORY_POWER_CELL = addItem(555, "manifold.oscillatory.power.cell");
+        QCD_PROTECTIVE_PLATING = addItem(556, "qcd.protective.plating");
+        CTC_GUIDANCE_UNIT = addItem(557, "ctc.guidance.unit");
+        CTC_COMPUTATIONAL_UNIT_CONTAINER = addItem(558, "ctc.computational.unit.container");
+        EIGENFOLDED_KERR_MANIFOLD = addItem(559, "eigenfolded.kerr.manifold");
+        CTC_COMPUTATIONAL_UNIT = addItem(560, "ctc.computational.unit");
+        RECURSIVELY_FOLDED_NEGATIVE_SPACE = addItem(561, "recursively.folded.negative.space");
 
         ThoriumRadioactive.waste = THORIUM_WASTE;
         Protactinium.waste = PROTACTINIUM_WASTE;

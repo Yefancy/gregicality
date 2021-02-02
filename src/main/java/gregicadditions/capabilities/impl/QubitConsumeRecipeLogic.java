@@ -3,7 +3,6 @@ package gregicadditions.capabilities.impl;
 
 import gregicadditions.capabilities.IQubitContainer;
 import gregicadditions.machines.multi.qubit.QubitRecipeMapMultiblockController;
-import gregicadditions.utils.GALog;
 import gregtech.api.metatileentity.multiblock.RecipeMapMultiblockController;
 import gregtech.api.recipes.Recipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,7 +15,6 @@ public class QubitConsumeRecipeLogic extends GAMultiblockRecipeLogic {
 
     public QubitConsumeRecipeLogic(RecipeMapMultiblockController metaTileEntity) {
         super(metaTileEntity);
-        setAllowOverclocking(false);
     }
 
     public IQubitContainer getInputQubitContainer() {
@@ -25,15 +23,16 @@ public class QubitConsumeRecipeLogic extends GAMultiblockRecipeLogic {
     }
 
     @Override
-    public boolean isAllowOverclocking() {
-        return recipeQubit == 0;
+    protected int[] calculateOverclock(int EUt, long voltage, int duration) {
+        if (recipeQubit > 0) {
+            return new int[]{EUt, duration};
+        }
+        return super.calculateOverclock(EUt, voltage, duration);
     }
 
     @Override
     protected void setupRecipe(Recipe recipe) {
         super.setupRecipe(recipe);
-
-        GALog.logger.info(recipe.getPropertyKeys());
         recipeQubit = recipe.getIntegerProperty("qubitConsume");
     }
 

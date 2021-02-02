@@ -3,16 +3,17 @@ package gregicadditions.worldgen;
 import gregicadditions.network.IPSaveData;
 import gregicadditions.network.MessageReservoirListSync;
 import gregicadditions.network.NetworkHandler;
+import gregicadditions.utils.GALog;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class PumpjackHandler {
     public final static LinkedHashMap<ReservoirType, Integer> reservoirList = new LinkedHashMap<>();
-    private final static Map<Integer, HashMap<String, Integer>> totalWeightMap = new HashMap<>();
+    private final static Map<Integer, HashMap<Integer, Integer>> totalWeightMap = new HashMap<>();
 
     public static HashMap<DimensionChunkCoords, Long> timeCache = new HashMap<>();
     public static HashMap<DimensionChunkCoords, OilWorldInfo> oilCache = new HashMap<>();
@@ -180,11 +181,11 @@ public class PumpjackHandler {
             totalWeightMap.put(dim, new HashMap<>());
         }
 
-        Map<String, Integer> dimMap = totalWeightMap.get(dim);
-        String biomeName = getBiomeName(biome);
+        Map<Integer, Integer> dimMap = totalWeightMap.get(dim);
+        int biomeID = Biome.getIdForBiome(biome);
 
-        if (dimMap.containsKey(biomeName)) {
-            return dimMap.get(biomeName);
+        if (dimMap.containsKey(biomeID)) {
+            return dimMap.get(biomeID);
         }
 
         int totalWeight = 0;
@@ -192,7 +193,7 @@ public class PumpjackHandler {
             if (e.getKey().validDimension(dim) && e.getKey().validBiome(biome))
                 totalWeight += e.getValue();
         }
-        dimMap.put(biomeName, totalWeight);
+        dimMap.put(biomeID, totalWeight);
         return totalWeight;
     }
 
@@ -227,14 +228,14 @@ public class PumpjackHandler {
     private static final HashMap<Biome, String> biomeNames = new HashMap<>();
 
     /**
-     * Get the biome name associated with a given biome
+     * Get the biome name associated with a given biome (it's not a recommended method)
      *
      * @param biome The biome to get the name
      * @return The biome's name
      */
     public static String getBiomeName(Biome biome) {
         if (!biomeNames.containsKey(biome)) {
-            String biomeName = biome.getBiomeName();
+            String biomeName = ObfuscationReflectionHelper.getPrivateValue(Biome.class, biome, "field_76791_y"); // field_76791_y -> Biome.biomeName
             biomeNames.put(biome, biomeName.replace(" ", "").replace("_", "").toLowerCase());
         }
         return biomeNames.get(biome);
@@ -271,8 +272,8 @@ public class PumpjackHandler {
         public List<Integer> dimensionWhitelist = new ArrayList<>();
         public List<Integer> dimensionBlacklist = new ArrayList<>();
 
-        public List<String> biomeWhitelist = new ArrayList<>();
-        public List<String> biomeBlacklist = new ArrayList<>();
+        public List<Integer> biomeWhitelist = new ArrayList<>();
+        public List<Integer> biomeBlacklist = new ArrayList<>();
 
         private Fluid f;
 
@@ -313,19 +314,23 @@ public class PumpjackHandler {
         public boolean validBiome(Biome biome) {
             if (biome == null) return false;
             if (biomeWhitelist != null && biomeWhitelist.size() > 0) {
-                for (String white : biomeWhitelist) {
-                    for (BiomeDictionary.Type biomeType : BiomeDictionary.getTypes(biome)) {
-                        if (convertConfigName(white).equals(biomeType.getName()))
-                            return true;
-                    }
+                GALog.logger.info("white {}", biomeWhitelist);
+                for (Integer white : biomeWhitelist) {
+                    if (white == null) continue;
+                    GALog.logger.info("id {}", white);
+                    GALog.logger.info("biome {}", Biome.getBiomeForId(white));
+                    if (Biome.getBiomeForId(white).equals(biome))
+                        return true;
                 }
                 return false;
             } else if (biomeBlacklist != null && biomeBlacklist.size() > 0) {
-                for (String black : biomeBlacklist) {
-                    for (BiomeDictionary.Type biomeType : BiomeDictionary.getTypes(biome)) {
-                        if (convertConfigName(black).equals(biomeType.getName()))
-                            return false;
-                    }
+                GALog.logger.info("black {}", biomeBlacklist);
+                for (Integer black : biomeBlacklist) {
+                    if (black == null) continue;
+                    GALog.logger.info("id {}", black);
+                    GALog.logger.info("biome {}", Biome.getBiomeForId(black));
+                    if (Biome.getBiomeForId(black).equals(biome))
+                        return false;
                 }
                 return true;
             }
@@ -345,14 +350,14 @@ public class PumpjackHandler {
             tag.setIntArray("dimensionBlacklist", ArrayUtils.toPrimitive(dimensionBlacklist.toArray(new Integer[0])));
 
             NBTTagList wl = new NBTTagList();
-            for (String s : biomeWhitelist) {
-                wl.appendTag(new NBTTagString(s));
+            for (Integer s : biomeWhitelist) {
+                wl.appendTag(new NBTTagString(s + ""));
             }
             tag.setTag("biomeWhitelist", wl);
 
             NBTTagList bl = new NBTTagList();
-            for (String s : biomeBlacklist) {
-                bl.appendTag(new NBTTagString(s));
+            for (Integer s : biomeBlacklist) {
+                bl.appendTag(new NBTTagString(s + ""));
             }
             tag.setTag("biomeBlacklist", bl);
 
@@ -375,13 +380,13 @@ public class PumpjackHandler {
             NBTTagList wl = (NBTTagList) tag.getTag("biomeWhitelist");
             res.biomeWhitelist = new ArrayList<>(wl.tagCount());
             for (int i = 0; i < wl.tagCount(); i++) {
-                res.biomeWhitelist.add(i, wl.getStringTagAt(i));
+                res.biomeWhitelist.add(i, Integer.valueOf(wl.getStringTagAt(i)));
             }
 
             NBTTagList bl = (NBTTagList) tag.getTag("biomeBlacklist");
             res.biomeBlacklist = new ArrayList<>(bl.tagCount());
             for (int i = 0; i < bl.tagCount(); i++) {
-                res.biomeBlacklist.add(i, bl.getStringTagAt(i));
+                res.biomeBlacklist.add(i, Integer.valueOf(bl.getStringTagAt(i)));
             }
 
 

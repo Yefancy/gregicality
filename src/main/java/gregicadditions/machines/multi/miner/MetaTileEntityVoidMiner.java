@@ -5,6 +5,7 @@ import codechicken.lib.render.pipeline.IVertexOperation;
 import codechicken.lib.vec.Matrix4;
 import com.google.common.collect.Lists;
 import gregicadditions.GAMaterials;
+import gregicadditions.GAUtility;
 import gregicadditions.GAValues;
 import gregicadditions.item.GAMetaBlocks;
 import gregtech.api.capability.IEnergyContainer;
@@ -41,6 +42,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
+import scala.tools.cmd.Meta;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -49,7 +51,7 @@ import java.util.List;
 import java.util.Map;
 
 import static gregicadditions.GAMaterials.*;
-import static gregicadditions.recipes.VoidMinerOres.ORES;
+import static gregicadditions.recipes.VoidMinerOres.*;
 import static gregtech.api.unification.material.Materials.TungstenSteel;
 
 
@@ -75,6 +77,7 @@ public class MetaTileEntityVoidMiner extends MultiblockWithDisplayBase {
         this.tier = tier;
         this.energyDrain = GAValues.V[tier];
         this.maxTemperature = temp;
+        this.reinitializeStructurePattern();
     }
 
     @Override
@@ -181,7 +184,7 @@ public class MetaTileEntityVoidMiner extends MultiblockWithDisplayBase {
                     return;
                 }
 
-                List<ItemStack> ores = new ArrayList<>(ORES);
+                List<ItemStack> ores = getOres();
                 Collections.shuffle(ores);
                 ores.stream().limit(10).peek(itemStack -> itemStack.setCount(getWorld().rand.nextInt(nbOres * nbOres) + 1)).forEach(itemStack -> {
                     addItemsToItemHandler(outputInventory, false, Collections.singletonList(itemStack));
@@ -189,6 +192,18 @@ public class MetaTileEntityVoidMiner extends MultiblockWithDisplayBase {
 
 
             }
+        }
+    }
+
+    List<ItemStack> getOres() {
+        switch(tier) {
+            case 8:
+                return ORES;
+            case 9:
+                return ORES_2;
+            case 10:
+            default:
+                return ORES_3;
         }
     }
 
@@ -233,7 +248,7 @@ public class MetaTileEntityVoidMiner extends MultiblockWithDisplayBase {
         if (this.isStructureFormed()) {
             if (energyContainer != null && energyContainer.getEnergyCapacity() > 0) {
                 long maxVoltage = energyContainer.getInputVoltage();
-                String voltageName = GAValues.VN[GTUtility.getTierByVoltage(maxVoltage)];
+                String voltageName = GAValues.VN[GAUtility.getTierByVoltage(maxVoltage)];
                 textList.add(new TextComponentTranslation("gregtech.multiblock.max_energy_per_tick", maxVoltage, voltageName));
             }
             textList.add(new TextComponentTranslation("gregtech.multiblock.universal.energy_used", energyDrain));
@@ -249,29 +264,37 @@ public class MetaTileEntityVoidMiner extends MultiblockWithDisplayBase {
 
     public IBlockState getCasingState() {
         switch (tier) {
+            case 8:
+                return GAMetaBlocks.getMetalCasingBlockState(HastelloyN);
             case 9:
                 return GAMetaBlocks.getMetalCasingBlockState(EnrichedNaquadahAlloy);
-            case 8:
+            case 10:
             default:
-            return GAMetaBlocks.getMetalCasingBlockState(HastelloyN);
+                return GAMetaBlocks.getMetalCasingBlockState(HastelloyK243);
         }
     }
 
     public IBlockState getSecondaryCasingState() {
         switch (tier) {
             case 8:
-            default:
                 return GAMetaBlocks.getMetalCasingBlockState(Staballoy);
+            case 9:
+                return GAMetaBlocks.getMetalCasingBlockState(Incoloy813);
+            case 10:
+            default:
+                return GAMetaBlocks.getMetalCasingBlockState(HastelloyX78);
         }
     }
 
     public IBlockState getFrameState() {
         switch (tier) {
-            case 9:
-                return MetaBlocks.FRAMES.get(Incoloy813).getDefaultState();
             case 8:
+                return MetaBlocks.FRAMES.get(TungstenSteel).getDefaultState();
+            case 9:
+                return MetaBlocks.FRAMES.get(Seaborgium).getDefaultState();
+            case 10:
             default:
-            return MetaBlocks.FRAMES.get(TungstenSteel).getDefaultState();
+                return MetaBlocks.FRAMES.get(Bohrium).getDefaultState();
         }
     }
 
@@ -280,6 +303,8 @@ public class MetaTileEntityVoidMiner extends MultiblockWithDisplayBase {
         switch (tier) {
             case 9:
                 return GAMetaBlocks.METAL_CASING.get(EnrichedNaquadahAlloy);
+            case 10:
+                return GAMetaBlocks.METAL_CASING.get(HastelloyK243);
             case 8:
             default:
                 return GAMetaBlocks.METAL_CASING.get(HastelloyN);
@@ -341,6 +366,22 @@ public class MetaTileEntityVoidMiner extends MultiblockWithDisplayBase {
             this.isActive = buf.readBoolean();
             getHolder().scheduleChunkForRenderUpdate();
         }
+    }
+
+    public int getMaxTemperature() {
+        return maxTemperature;
+    }
+
+    public boolean isOverheat() {
+        return overheat;
+    }
+
+    public int getTemperature() {
+        return temperature;
+    }
+
+    public double getCurrentDrillingFluid() {
+        return currentDrillingFluid;
     }
 
 }

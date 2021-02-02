@@ -3,6 +3,8 @@ package gregicadditions.machines.multi;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.pipeline.IVertexOperation;
 import codechicken.lib.vec.Matrix4;
+import gregicadditions.GAConfig;
+import gregicadditions.GAUtility;
 import gregicadditions.GAValues;
 import gregicadditions.item.CellCasing;
 import gregicadditions.item.GAMetaBlocks;
@@ -75,8 +77,8 @@ public class MetaTileEntityBatteryTower extends MultiblockWithDisplayBase implem
         this.cell = context.getOrDefault("CellType", CellCasing.CellType.CELL_HV);
         int size = context.getOrDefault("nbCell", 0);
 
-        long inputAboveTier = getAbilities(MultiblockAbility.INPUT_ENERGY).stream().map(iEnergyContainer -> GTUtility.getTierByVoltage(iEnergyContainer.getInputVoltage())).filter(aByte -> aByte > cell.getTier()).count();
-        long outputAboveTier = getAbilities(MultiblockAbility.OUTPUT_ENERGY).stream().map(iEnergyContainer -> GTUtility.getTierByVoltage(iEnergyContainer.getOutputVoltage())).filter(aByte -> aByte > cell.getTier()).count();
+        long inputAboveTier = getAbilities(MultiblockAbility.INPUT_ENERGY).stream().map(iEnergyContainer -> GAUtility.getTierByVoltage(iEnergyContainer.getInputVoltage())).filter(aByte -> aByte > cell.getTier()).count();
+        long outputAboveTier = getAbilities(MultiblockAbility.OUTPUT_ENERGY).stream().map(iEnergyContainer -> GAUtility.getTierByVoltage(iEnergyContainer.getOutputVoltage())).filter(aByte -> aByte > cell.getTier()).count();
 
         if (inputAboveTier > 0 || outputAboveTier > 0) {
             this.invalidateStructure();
@@ -96,7 +98,7 @@ public class MetaTileEntityBatteryTower extends MultiblockWithDisplayBase implem
     public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, player, tooltip, advanced);
         tooltip.add(I18n.format("gtadditions.multiblock.battery_tower.tooltip.1"));
-        tooltip.add(I18n.format("gtadditions.multiblock.battery_tower.tooltip.2"));
+        tooltip.add(I18n.format("gtadditions.multiblock.battery_tower.tooltip.2", GAConfig.multis.batteryTower.lossPercentage));
         tooltip.add(I18n.format("gtadditions.multiblock.battery_tower.tooltip.3"));
 
     }
@@ -108,7 +110,7 @@ public class MetaTileEntityBatteryTower extends MultiblockWithDisplayBase implem
             long energyAddedFromInput = this.addEnergy(inputEnergyStore);
             energyInputPerTick = input.changeEnergy(-energyAddedFromInput);
 
-            this.changeEnergy(-GAValues.V[cell.getTier()] * 10 / 100);
+            this.changeEnergy(-GAValues.V[cell.getTier()] * GAConfig.multis.batteryTower.lossPercentage / 100);
 
             long bankEnergyStore = this.getEnergyStored();
             long energyAddedFromBank = output.addEnergy(bankEnergyStore);
