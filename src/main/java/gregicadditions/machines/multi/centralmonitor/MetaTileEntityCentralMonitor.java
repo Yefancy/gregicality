@@ -5,6 +5,7 @@ import codechicken.lib.render.pipeline.IVertexOperation;
 import codechicken.lib.vec.Matrix4;
 import gregicadditions.covers.CoverDigitalInterface;
 import gregicadditions.item.GAMetaBlocks;
+import gregicadditions.machines.MetaTileEntityDigitalInterface;
 import gregicadditions.renderer.RenderHelper;
 import gregicadditions.utils.Tuple;
 import gregicadditions.widgets.monitor.WidgetScreenGrid;
@@ -135,7 +136,14 @@ public class MetaTileEntityCentralMonitor extends MultiblockWithDisplayBase impl
                 TileEntity tileEntity = world.getTileEntity(pos.offset(facing));
                 if (tileEntity instanceof MetaTileEntityHolder && !((TileEntityCable) tileEntityCable).isConnectionBlocked(AttachmentType.PIPE, facing)) {
                     MetaTileEntity metaTileEntity = ((MetaTileEntityHolder) tileEntity).getMetaTileEntity();
-                    if (metaTileEntity != null) {
+                    if (metaTileEntity instanceof MetaTileEntityDigitalInterface) {
+                        for (CoverDigitalInterface cover : ((MetaTileEntityDigitalInterface) metaTileEntity).getCoverBehaviors()) {
+                            if (cover != null) {
+                                checkCovers.add(new Tuple<>(metaTileEntity.getPos(), cover.attachedSide));
+                            }
+                        }
+                    }
+                    else if (metaTileEntity != null) {
                         CoverBehavior cover = metaTileEntity.getCoverAtSide(facing.getOpposite());
                         if (cover instanceof CoverDigitalInterface && ((CoverDigitalInterface) cover).isProxy()) {
                             checkCovers.add(new Tuple<>(metaTileEntity.getPos(), cover.attachedSide));
@@ -200,6 +208,7 @@ public class MetaTileEntityCentralMonitor extends MultiblockWithDisplayBase impl
     }
 
     private void setActive(boolean isActive) {
+        isActive = true;
         if(isActive == this.isActive) return;
         this.isActive = isActive;
         writeCustomData(4, buf -> buf.writeBoolean(this.isActive));

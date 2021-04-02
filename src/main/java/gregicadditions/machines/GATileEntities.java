@@ -117,6 +117,7 @@ public class GATileEntities {
     public static ListMultimap<EnergyConverterType, MetaTileEntityEnergyConverter> ENERGY_CONVERTER = ArrayListMultimap.create();
     public static MetaTileEntityRotorHolderForNuclearCoolant[] ROTOR_HOLDER = new MetaTileEntityRotorHolderForNuclearCoolant[4];
     public static TileEntityBuffer[] BUFFER = new TileEntityBuffer[3];
+    public static MetaTileEntityDigitalInterface DIGITAL_INTERFACE;
     //multiblock
     public static MetaTileEntityMonitorScreen MONITOR_SCREEN;
     public static MetaTileEntityCentralMonitor CENTRAL_MONITOR;
@@ -246,7 +247,6 @@ public class GATileEntities {
     public static MetaTileEntityElectricImplosion ELECTRIC_IMPLOSION;
 
     public static void init() {
-
         MONITOR_SCREEN = GregTechAPI.registerMetaTileEntity(1999, new MetaTileEntityMonitorScreen(location("monitor_screen")));
 
         CIRCUITASSEMBLER[0] = GregTechAPI.registerMetaTileEntity(2000, new SimpleMachineMetaTileEntity(location("circuit_assembler.lv"), GARecipeMaps.CIRCUIT_ASSEMBLER_RECIPES, Textures.ASSEMBLER_OVERLAY, 1));
@@ -1165,6 +1165,8 @@ public class GATileEntities {
             }
         }
         ELECTRIC_IMPLOSION = GregTechAPI.registerMetaTileEntity(4211, new MetaTileEntityElectricImplosion(location("electric_implosion")));
+
+        DIGITAL_INTERFACE = GregTechAPI.registerMetaTileEntity(4212, new MetaTileEntityDigitalInterface(location("digital_interface")));
     }
 
     public static <T extends MetaTileEntity & ITieredMetaTileEntity> MTE<T> create(int id, T sampleMetaTileEntity) {

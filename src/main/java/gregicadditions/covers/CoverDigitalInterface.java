@@ -25,7 +25,6 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.multiblock.MultiblockAbility;
 import gregtech.api.metatileentity.multiblock.MultiblockControllerBase;
 import gregtech.api.util.Position;
-import gregtech.common.metatileentities.storage.MetaTileEntityQuantumChest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -62,7 +61,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 public class CoverDigitalInterface extends CoverBehavior implements IFastRenderMetaTileEntity, ITickable, CoverWithUI {
 
@@ -119,7 +117,7 @@ public class CoverDigitalInterface extends CoverBehavior implements IFastRenderM
     // run-time data
     private FluidTankProperties[] fluids = new FluidTankProperties[0];
     private ItemStack[] items = new ItemStack[0];
-    private int quantumChestCapability = 0;
+    private int maxItemCapability = 0;
     private long energyStored = 0;
     private long energyCapability = 0;
     private long energyInputPerDur = 0;
@@ -134,7 +132,7 @@ public class CoverDigitalInterface extends CoverBehavior implements IFastRenderM
     private UUID lastClickUUID;
     // persistent data
     private int slot = 0;
-    private MODE mode = MODE.FLUID;
+    private MODE mode = MODE.PROXY;
     private EnumFacing spin = EnumFacing.EAST;
     private final int[] proxyMode = new int[]{0, 0, 0, 0}; // server-only
 
@@ -153,7 +151,6 @@ public class CoverDigitalInterface extends CoverBehavior implements IFastRenderM
 
     public void setMode(MODE mode, int slot, EnumFacing spin) {
         if ((this.mode == mode && (this.slot == slot || slot < 0) && this.spin == spin)) return;
-        this.markAsDirty();
         if (!isRemote()) {
             if (this.mode != MODE.PROXY && mode == MODE.PROXY) {
                 proxyMode[0] = 0;
@@ -169,6 +166,10 @@ public class CoverDigitalInterface extends CoverBehavior implements IFastRenderM
                 packetBuffer.writeInt(slot);
                 packetBuffer.writeByte(spin.getIndex());
             });
+            if (this.coverHolder != null) {
+                this.coverHolder.notifyBlockUpdate();
+                this.coverHolder.markDirty();
+            }
         } else {
             if ((this.mode != mode || this.spin != spin) && this.coverHolder != null) {
                 this.coverHolder.scheduleRenderUpdate();
@@ -238,7 +239,7 @@ public class CoverDigitalInterface extends CoverBehavior implements IFastRenderM
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
-        this.mode = tagCompound.hasKey("cdiMode")? MODE.VALUES[tagCompound.getByte("cdiMode")] : MODE.FLUID;
+        this.mode = tagCompound.hasKey("cdiMode")? MODE.VALUES[tagCompound.getByte("cdiMode")] : MODE.PROXY;
         this.spin = tagCompound.hasKey("cdiSpin")? EnumFacing.byIndex(tagCompound.getByte("cdiSpin")) : EnumFacing.EAST;
         this.slot = tagCompound.hasKey("cdiSlot")? tagCompound.getInteger("cdiSlot"): 0;
         this.proxyMode[0] = tagCompound.hasKey("cdi0")? tagCompound.getInteger("cdi0"): 0;
@@ -271,9 +272,9 @@ public class CoverDigitalInterface extends CoverBehavior implements IFastRenderM
         packetBuffer.writeEnumValue(spin);
         packetBuffer.writeInt(slot);
         syncAllInfo();
-        writeFluids(packetBuffer);
-        writeItems(packetBuffer);
-        packetBuffer.writeInt(quantumChestCapability);
+        writeAllFluids(packetBuffer);
+        writeAllItems(packetBuffer);
+        packetBuffer.writeInt(maxItemCapability);
         packetBuffer.writeLong(energyStored);
         packetBuffer.writeLong(energyCapability);
         packetBuffer.writeInt(inputEnergyList.size());
@@ -295,7 +296,7 @@ public class CoverDigitalInterface extends CoverBehavior implements IFastRenderM
         this.slot = packetBuffer.readInt();
         readFluids(packetBuffer);
         readItems(packetBuffer);
-        quantumChestCapability = packetBuffer.readInt();
+        maxItemCapability = packetBuffer.readInt();
         energyStored = packetBuffer.readLong();
         energyCapability = packetBuffer.readLong();
         int size = packetBuffer.readInt();
@@ -510,6 +511,7 @@ public class CoverDigitalInterface extends CoverBehavior implements IFastRenderM
                     fluids = new FluidTankProperties[fluidTankProperties.length];
                     syncFlag = true;
                 }
+                List<Integer> toUpdate = new ArrayList<>();
                 for (int i = 0; i < fluidTankProperties.length; i++) {
                     FluidStack content = fluidTankProperties[i].getContents();
                     if (fluids[i] == null || (content == null && fluids[i].getContents() != null) || (content != null && fluids[i].getContents() == null) ||
@@ -518,31 +520,41 @@ public class CoverDigitalInterface extends CoverBehavior implements IFastRenderM
                             fluidTankProperties[i].canFill() != fluids[i].canFill()) {
                         syncFlag = true;
                         fluids[i] = new FluidTankProperties(content, fluidTankProperties[i].getCapacity(), fluidTankProperties[i].canFill(), fluidTankProperties[i].canDrain());
+                        toUpdate.add(i);
                     } else if(content != null && (content.amount != fluids[i].getContents().amount || !content.isFluidEqual(fluids[i].getContents()))) {
                         syncFlag = true;
                         fluids[i] = new FluidTankProperties(content, fluidTankProperties[i].getCapacity(), fluidTankProperties[i].canFill(), fluidTankProperties[i].canDrain());
+                        toUpdate.add(i);
                     }
                 }
+                if (syncFlag) writeUpdateData(2, packetBuffer->{
+                    packetBuffer.writeVarInt(fluids.length);
+                    packetBuffer.writeVarInt(toUpdate.size());
+                    for (Integer index : toUpdate) {
+                        packetBuffer.writeVarInt(index);
+                        NBTTagCompound nbt = new NBTTagCompound();
+                        nbt.setInteger("Capacity", fluids[index].getCapacity());
+                        if (fluids[index].getContents() != null) {
+                            fluids[index].getContents().writeToNBT(nbt);
+                        }
+                        packetBuffer.writeCompoundTag(nbt);
+                    }
+                });
             }
-            if (syncFlag) writeUpdateData(2, this::writeFluids);
         }
         if(mode == MODE.ITEM || (mode == MODE.PROXY && proxyMode[1] > 0)) {
             boolean syncFlag = false;
             IItemHandler itemHandler = this.getItemCapability();
-            if (this.coverHolder instanceof MetaTileEntityQuantumChest) {
-                long maxStoredItems = ObfuscationReflectionHelper.getPrivateValue(MetaTileEntityQuantumChest.class, (MetaTileEntityQuantumChest)this.coverHolder, "maxStoredItems");
-                if (maxStoredItems != quantumChestCapability) {
-                    quantumChestCapability = (int) maxStoredItems;
-                    syncFlag = true;
-                }
-            } else {
-                if (quantumChestCapability != 0) {
-                    quantumChestCapability = 0;
-                    syncFlag = true;
-                }
-            }
             if(itemHandler != null) {
                 int size = itemHandler.getSlots();
+                if (this.slot < size) {
+                    int maxStoredItems = itemHandler.getSlotLimit(this.slot);
+                    if (maxStoredItems != maxItemCapability) {
+                        maxItemCapability = maxStoredItems;
+                        syncFlag = true;
+                    }
+                }
+                List<Integer> toUpdate = new ArrayList<>();
                 if (items.length != size) {
                     items = new ItemStack[size];
                     syncFlag = true;
@@ -555,10 +567,19 @@ public class CoverDigitalInterface extends CoverBehavior implements IFastRenderM
                     if (!ItemStack.areItemStacksEqual(items[i], content)) {
                         syncFlag = true;
                         items[i] = content.copy();
+                        toUpdate.add(i);
                     }
                 }
+                if (syncFlag) writeUpdateData(3, packetBuffer -> {
+                    packetBuffer.writeVarInt(maxItemCapability);
+                    packetBuffer.writeVarInt(items.length);
+                    packetBuffer.writeVarInt(toUpdate.size());
+                    for (Integer index : toUpdate) {
+                        packetBuffer.writeVarInt(index);
+                        packetBuffer.writeCompoundTag(fixItemStackSer(items[index]));
+                    }
+                });
             }
-            if (syncFlag) writeUpdateData(3, this::writeItems);
         }
         if (this.mode == MODE.ENERGY || (mode == MODE.PROXY && proxyMode[2] > 0)) {
             IEnergyContainer energyContainer = this.getEnergyCapability();
@@ -623,25 +644,32 @@ public class CoverDigitalInterface extends CoverBehavior implements IFastRenderM
         }
     }
 
-    private void writeFluids(PacketBuffer packetBuffer) {
-        packetBuffer.writeInt(fluids.length);
-        for (FluidTankProperties fluid : fluids) {
+    private void writeAllFluids(PacketBuffer packetBuffer) {
+        packetBuffer.writeVarInt(fluids.length);
+        packetBuffer.writeVarInt(fluids.length);
+        for (int i = 0; i < fluids.length; i++) {
+            packetBuffer.writeVarInt(i);
             NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setInteger("Capacity", fluids[0].getCapacity());
-            if (fluid.getContents() != null) {
-                fluid.getContents().writeToNBT(nbt);
+            nbt.setInteger("Capacity", fluids[i].getCapacity());
+            if (fluids[i].getContents() != null) {
+                fluids[i].getContents().writeToNBT(nbt);
             }
             packetBuffer.writeCompoundTag(nbt);
         }
     }
 
     private void readFluids(PacketBuffer packetBuffer) {
-        fluids = new FluidTankProperties[packetBuffer.readInt()];
+        int size = packetBuffer.readVarInt();
+        if (fluids == null || fluids.length != size) {
+            fluids = new FluidTankProperties[size];
+        }
+        size = packetBuffer.readVarInt();
         try {
-            for (int i = 0; i < fluids.length; i++) {
+            for (int i = 0; i < size; i++) {
+                int index = packetBuffer.readVarInt();
                 NBTTagCompound nbt = packetBuffer.readCompoundTag();
                 if (nbt != null) {
-                    fluids[i] = new FluidTankProperties(FluidStack.loadFluidStackFromNBT(nbt), nbt.getInteger("Capacity"));
+                    fluids[index] = new FluidTankProperties(FluidStack.loadFluidStackFromNBT(nbt), nbt.getInteger("Capacity"));
                 }
             }
         } catch (IOException e) {
@@ -649,25 +677,32 @@ public class CoverDigitalInterface extends CoverBehavior implements IFastRenderM
         }
     }
 
-    private void writeItems(PacketBuffer packetBuffer) {
-        packetBuffer.writeInt(quantumChestCapability);
-        packetBuffer.writeInt(items.length);
-        for (ItemStack item : items) {
-            packetBuffer.writeCompoundTag(fixItemStackSer(item));
+    private void writeAllItems(PacketBuffer packetBuffer) {
+        packetBuffer.writeVarInt(maxItemCapability);
+        packetBuffer.writeVarInt(items.length);
+        packetBuffer.writeVarInt(items.length);
+        for (int i = 0; i < items.length; i++) {
+            packetBuffer.writeVarInt(i);
+            packetBuffer.writeCompoundTag(fixItemStackSer(items[i]));
         }
     }
 
     private void readItems(PacketBuffer packetBuffer) {
-        quantumChestCapability = packetBuffer.readInt();
-        items = new ItemStack[packetBuffer.readInt()];
+        maxItemCapability = packetBuffer.readVarInt();
+        int size = packetBuffer.readVarInt();
+        if(items == null || items.length != size) {
+            items = new ItemStack[size];
+        }
+        size = packetBuffer.readVarInt();
         try {
-            for (int i = 0; i < items.length; i++) {
+            for (int i = 0; i < size; i++) {
+                int index = packetBuffer.readVarInt();
                 NBTTagCompound nbt = packetBuffer.readCompoundTag();
                 if (nbt != null) {
-                    items[i] = new ItemStack(nbt);
-                    items[i].setCount(nbt.getInteger("count"));
+                    items[index] = new ItemStack(nbt);
+                    items[index].setCount(nbt.getInteger("count"));
                 } else {
-                    items [i] = ItemStack.EMPTY;
+                    items [index] = ItemStack.EMPTY;
                 }
             }
         } catch (IOException e) {
@@ -885,9 +920,9 @@ public class CoverDigitalInterface extends CoverBehavior implements IFastRenderM
 
     @SideOnly(Side.CLIENT)
     public void renderMode(MODE mode, int slot, float partialTicks) {
-        if (mode == MODE.FLUID && fluids.length > slot && slot >= 0 && fluids[slot].getContents() != null) {
+        if (mode == MODE.FLUID && fluids.length > slot && slot >= 0 && fluids[slot] != null && fluids[slot].getContents() != null) {
             renderFluidMode(slot);
-        } else if (mode == MODE.ITEM && items.length > slot && slot >= 0) {
+        } else if (mode == MODE.ITEM && items.length > slot && slot >= 0 && items[slot] != null) {
             renderItemMode(slot);
         } else if (mode == MODE.ENERGY) {
             renderEnergyMode();
@@ -948,8 +983,8 @@ public class CoverDigitalInterface extends CoverBehavior implements IFastRenderM
         ItemStack itemStack = items[slot];
         if (!itemStack.isEmpty()) {
            RenderHelper.renderItemOverLay(-8f/16, -5f/16, 0, 1f/32, itemStack);
-           if(quantumChestCapability != 0) {
-               RenderHelper.renderRect(-7f / 16, -7f / 16, Math.max(itemStack.getCount() * 14f / (quantumChestCapability * 16), 0.001f), 3f / 16, 0.002f, 0XFF25B9FF);
+           if(maxItemCapability != 0) {
+               RenderHelper.renderRect(-7f / 16, -7f / 16, Math.max(itemStack.getCount() * 14f / (maxItemCapability * 16), 0.001f), 3f / 16, 0.002f, 0XFF25B9FF);
            } else {
                RenderHelper.renderRect(-7f / 16, -7f / 16, Math.max(itemStack.getCount() * 14f / (itemStack.getMaxStackSize() * 16), 0.001f), 3f / 16, 0.002f, 0XFF25B9FF);
            }

@@ -1,6 +1,7 @@
 package gregicadditions.widgets.monitor;
 
 import gregicadditions.covers.CoverDigitalInterface;
+import gregicadditions.machines.MetaTileEntityDigitalInterface;
 import gregtech.api.gui.IRenderContext;
 import gregtech.api.gui.Widget;
 import gregtech.api.gui.widgets.LabelWidget;
@@ -10,12 +11,16 @@ import gregtech.api.gui.widgets.WidgetGroup;
 import gregtech.api.util.Position;
 import gregtech.api.util.RenderUtil;
 import gregtech.api.util.Size;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -35,11 +40,22 @@ public class WidgetCoverList extends ScrollableListWidget {
         this.onSelected = onSelected;
         for (CoverDigitalInterface cover: covers) {
             ItemStack itemStack = cover.coverHolder.getStackForm();
+            BlockPos pos = cover.coverHolder.getPos();
+            if (cover.coverHolder instanceof MetaTileEntityDigitalInterface) {
+                itemStack = null;
+                pos = pos.offset(cover.attachedSide);
+                TileEntity tileEntity = cover.coverHolder.getWorld().getTileEntity(pos);
+                IBlockState state = cover.coverHolder.getWorld().getBlockState(pos);
+                if (tileEntity != null) {
+                    itemStack = tileEntity.getBlockType().getItem(cover.coverHolder.getWorld(), pos, state);
+                }
+                if (itemStack == null) continue;
+            }
             ItemStackHandler itemStackHandler = new ItemStackHandler(1);
             itemStackHandler.insertItem(0, itemStack, false);
             WidgetGroup widgetGroup = new WidgetGroup();
             widgetGroup.addWidget(new SlotWidget(itemStackHandler, 0, 0, 0, false, false));
-            widgetGroup.addWidget(new LabelWidget(20, 5, String.format("(%d, %d, %d)", cover.coverHolder.getPos().getX(), cover.coverHolder.getPos().getY(), cover.coverHolder.getPos().getZ()), 0XFFFFFFFF));
+            widgetGroup.addWidget(new LabelWidget(20, 5, String.format("(%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ()), 0XFFFFFFFF));
             widgetMap.put(widgetGroup, cover);
             if (widgetGroup.getSize().width + this.scrollPaneWidth > this.getSize().width)
                 this.setSize(new Size(widgetGroup.getSize().width + this.scrollPaneWidth, this.getSize().height));

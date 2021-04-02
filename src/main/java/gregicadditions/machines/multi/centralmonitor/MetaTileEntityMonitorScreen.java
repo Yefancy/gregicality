@@ -6,6 +6,7 @@ import gregicadditions.covers.CoverDigitalInterface;
 import gregicadditions.item.behaviors.monitorPlugin.ProxyHolderPluginBehavior;
 import gregicadditions.item.behaviors.monitorPlugin.MonitorPluginBaseBehavior;
 import gregicadditions.machines.GATileEntities;
+import gregicadditions.machines.MetaTileEntityDigitalInterface;
 import gregicadditions.renderer.RenderHelper;
 import gregicadditions.utils.Tuple;
 import gregicadditions.widgets.WidgetARGB;
@@ -22,6 +23,7 @@ import gregtech.api.metatileentity.MetaTileEntityHolder;
 import gregtech.api.metatileentity.MetaTileEntityUIFactory;
 import gregtech.api.metatileentity.multiblock.MultiblockControllerBase;
 import gregtech.common.metatileentities.electric.multiblockpart.MetaTileEntityMultiblockPart;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -114,9 +116,14 @@ public class MetaTileEntityMonitorScreen extends MetaTileEntityMultiblockPart {
         if (posFacing == null) return null;
         MetaTileEntityHolder holder = getHolderFromPos(posFacing.getKey());
         if (holder == null) return null;
-        CoverBehavior cover = holder.getMetaTileEntity().getCoverAtSide(posFacing.getValue());
-        if (cover instanceof CoverDigitalInterface){
-            return (CoverDigitalInterface) cover;
+        MetaTileEntity mte = holder.getMetaTileEntity();
+        if (mte instanceof MetaTileEntityDigitalInterface) {
+            return ((MetaTileEntityDigitalInterface) mte).getCoverBehaviors()[posFacing.getValue().getIndex()];
+        } else if(mte != null){
+            CoverBehavior cover = mte.getCoverAtSide(posFacing.getValue());
+            if (cover instanceof CoverDigitalInterface){
+                return (CoverDigitalInterface) cover;
+            }
         }
         return null;
     }
@@ -206,7 +213,7 @@ public class MetaTileEntityMonitorScreen extends MetaTileEntityMultiblockPart {
         if (this.coverPos != null && this.mode != CoverDigitalInterface.MODE.PROXY) {
             CoverDigitalInterface cover = coverTMP != null? coverTMP : this.getCoverFromPosSide(this.coverPos);
             if (cover != null) {
-                if (cover.isValid() && cover.isProxy()) {
+                if (cover.isProxy()) {
                     coverTMP = cover;
                     return true;
                 }
@@ -287,11 +294,26 @@ public class MetaTileEntityMonitorScreen extends MetaTileEntityMultiblockPart {
             if (this.mode == CoverDigitalInterface.MODE.PROXY) return;
             if (flag) {
                 coverTMP.renderMode(this.mode, this.slot, partialTicks);
+
+                ItemStack itemStack = coverTMP.coverHolder.getStackForm();
+                String name = I18n.format(((MetaTileEntity) coverTMP.coverHolder).getMetaFullName());
+                BlockPos pos = coverTMP.coverHolder.getPos();
+                if (coverTMP.coverHolder instanceof MetaTileEntityDigitalInterface) {
+                    itemStack = null;
+                    pos = pos.offset(coverTMP.attachedSide);
+                    TileEntity tileEntity = coverTMP.coverHolder.getWorld().getTileEntity(pos);
+                    IBlockState state = coverTMP.coverHolder.getWorld().getBlockState(pos);
+                    if (tileEntity != null) {
+                        itemStack = tileEntity.getBlockType().getItem(coverTMP.coverHolder.getWorld(), pos, state);
+                        name = itemStack.getDisplayName();
+                    }
+                }
+
                 // render machine
-                RenderHelper.renderItemOverLay(-2.6f, -2.65f, 0.003f,1/100f, coverTMP.coverHolder.getStackForm());
+                RenderHelper.renderItemOverLay(-2.6f, -2.65f, 0.003f,1/100f, itemStack);
 
                 // render name
-                RenderHelper.renderText(0, -3.5f/16, 0, 1.0f / 200, 0XFFFFFFFF, I18n.format(((MetaTileEntity) coverTMP.coverHolder).getMetaFullName()), true);
+                RenderHelper.renderText(0, -3.5f/16, 0, 1.0f / 200, 0XFFFFFFFF, name, true);
             }
             // render frame
             RenderHelper.renderRect(-7f/16, -7f/16, 14f/16, 0.01f,0.003f, frameColor);
@@ -590,7 +612,7 @@ public class MetaTileEntityMonitorScreen extends MetaTileEntityMultiblockPart {
                 }
                 if(coverBehavior.modeRightClick(playerIn, hand, this.mode, this.slot) == EnumActionResult.PASS) {
                     if (!playerIn.isSneaking() && this.openGUIOnRightClick()) {
-                        MetaTileEntityUIFactory.INSTANCE.openUI(((MetaTileEntity)coverBehavior.coverHolder).getHolder(), (EntityPlayerMP)playerIn);
+                        ((MetaTileEntity)coverBehavior.coverHolder).onRightClick(playerIn, hand, coverBehavior.attachedSide, null);
                         return true;
                     } else {
                         return false;
